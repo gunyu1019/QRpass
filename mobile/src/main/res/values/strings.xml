@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">QRcheck</string>
     <string name="setting">설정</string>
+    <string name="logout">로그아웃</string>
 </resources>

@@ -3,6 +3,6 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/logout"
-            android:title="로그아웃" />
+            android:title="@string/logout" />
     </group>
 </menu>
