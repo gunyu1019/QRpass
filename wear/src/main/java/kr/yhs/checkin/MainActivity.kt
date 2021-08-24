@@ -5,13 +5,13 @@ import android.os.Bundle
 import kr.yhs.checkin.databinding.ActivityMainBinding
 
 class MainActivity : Activity() {
-
-    private lateinit var binding: ActivityMainBinding
+    private var mBinding: ActivityMainBinding? = null
+    private val binding get() = mBinding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
     }
