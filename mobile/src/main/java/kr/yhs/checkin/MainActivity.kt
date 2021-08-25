@@ -59,9 +59,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             var nidNL = false
             if ((pqr == null || aut == null || ses == null) || (pqr == "" || aut == "" || ses == ""))
-                 nidNL = true
+                nidNL = true
             Log.d("NaverID", "$nidNL")
-
 
             binding.webView.apply {
                 webViewClient = object : WebViewClient() {
@@ -91,7 +90,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             "NID_PQR=${pqr};NID_AUT=${aut};NID_SES=${ses};"
                         )
                     }
-                    loadUrl(naQRBase)
+                loadUrl(naQRBase)
             }
         }
     }
