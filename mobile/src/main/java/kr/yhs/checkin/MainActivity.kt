@@ -19,10 +19,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val datas = data.split(";")
         val result: MutableMap<String, String> = mutableMapOf()
         for (i in datas) {
-            val dataConvert = i.split("=")
+            val dataConvert: List<String> = i.split("=")
             if (dataConvert[1] == "")
                 continue
-            result[dataConvert[0]] = dataConvert[1]
+            result[dataConvert[0].trim()] = dataConvert[1]
         }
         return result
     }
@@ -54,8 +54,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val aut = pm.getString("NID_AUT")
             val ses = pm.getString("NID_SES")
 
-            Log.d("cookie-save", "NID_PQR=${pqr};NID_AUT=${aut};NID_SES=${ses};")
-            Log.d("cookie-save", "cookie=${cookie.getCookie(naQRBase)}")
+            Log.d("cookie", "NID_PQR=${pqr};NID_AUT=${aut};NID_SES=${ses};")
+            Log.d("cookie", "cookie=${cookie.getCookie(naQRBase)}")
 
             var nidNL = false
             if ((pqr == null || aut == null || ses == null) || (pqr == "" || aut == "" || ses == ""))
@@ -73,8 +73,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                                 cookie.getCookie(naQRBase)
                             )
 
-                            Log.d("cookie-save", "$data")
-                            // Log.d("cookie-save", "${cookie.getCookie(naQRBase)}")
+                            Log.d("cookie", "$data")
 
                             pm.setString("NID_PQR", data["NID_PQR"] ?: "")
                             pm.setString("NID_AUT", data["NID_AUT"] ?: "")
