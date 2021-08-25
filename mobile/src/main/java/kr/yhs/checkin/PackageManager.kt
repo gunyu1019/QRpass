@@ -2,6 +2,7 @@ package kr.yhs.checkin
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 
 
 class PackageManager(private val preferencesName: String, private val context: Context) {
@@ -12,23 +13,32 @@ class PackageManager(private val preferencesName: String, private val context: C
 
     fun setString(key: String, value: String) {
         val prefs = getPreferences()
-        val editors = prefs.edit()
-        editors.putString(key, value)
-        editors.apply()
+        prefs.apply {
+            edit {
+                putString(key, value)
+                commit()
+            }
+        }
     }
 
     fun setBoolean(key: String, value: Boolean) {
         val prefs = getPreferences()
-        val editors = prefs.edit()
-        editors.putBoolean(key, value)
-        editors.apply()
+        prefs.apply {
+            edit {
+                putBoolean(key, value)
+                commit()
+            }
+        }
     }
 
     fun setInt(key: String, value: Int) {
         val prefs = getPreferences()
-        val editors = prefs.edit()
-        editors.putInt(key, value)
-        editors.apply()
+        prefs.apply {
+            edit {
+                putInt(key, value)
+                commit()
+            }
+        }
     }
 
     fun getString(key: String): String? {
@@ -48,15 +58,21 @@ class PackageManager(private val preferencesName: String, private val context: C
 
     fun removeKey(key: String) {
         val prefs = getPreferences()
-        val editors = prefs.edit()
-        editors.remove(key)
-        editors.apply()
+        prefs.apply {
+            edit {
+                remove(key)
+                commit()
+            }
+        }
     }
 
     fun clear(context: Context) {
         val prefs = getPreferences()
-        val editors = prefs.edit()
-        editors.clear()
-        editors.apply()
+        prefs.apply {
+            edit {
+                clear()
+                commit()
+            }
+        }
     }
 }
