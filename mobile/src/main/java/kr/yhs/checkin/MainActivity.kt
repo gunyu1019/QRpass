@@ -11,6 +11,7 @@ import kr.yhs.checkin.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var mBinding: ActivityMainBinding? = null
     private val binding get() = mBinding!!
+    private val pm = PackageManager("checkIn", this@MainActivity)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,6 +20,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(binding.root)
         if (supportActionBar != null)
             supportActionBar!!.hide()
+        var typeMode = pm.getString("checkMode")
+        if (typeMode == null || typeMode == "") {
+            pm.setString("checkMode", "na")
+            typeMode = "na"
+        }
 
         binding.webView.settings.apply {
             javaScriptEnabled = true
@@ -28,25 +34,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             setSupportMultipleWindows(true)
         }
 
-        binding.webView.apply {
-            webViewClient = object : WebViewClient() {
-                override fun onPageFinished(view: WebView?, url: String?) {
-                    super.onPageFinished(view, url)
+        if (typeMode == "na") {
+            val pqr = pm.getString("NID_PQR")
+            val aut = pm.getString("NID_AUT")
+            val ses = pm.getString("NID_SES")
+            var nidNL = false
+            if (pqr == null || aut == null || ses == null)
+                 nidNL = true
 
-                    if (url == "https://nid.naver.com/login/privacyQR") {
-                        Log.i(
-                            "Debug",
-                            CookieManager.getInstance()
-                                .getCookie("https://nid.naver.com/login/privacyQR")
-                        )
+            binding.webView.apply {
+                webViewClient = object : WebViewClient() {
+                    override fun onPageFinished(view: WebView?, url: String?) {
+                        super.onPageFinished(view, url)
+
+                        if (url == "https://nid.naver.com/login/privacyQR" && nidNL) {
+                            pm.setString("NID_PQR", "")
+                            pm.setString("NID_AUT", "")
+                            pm.setString("NID_SES", "")
+                        }
                     }
                 }
-            }
 
-            if (cookie.getCookie("https://nid.naver.com/login/privacyQR") == null)
-                loadUrl("https://nid.naver.com/nidlogin.login?url=https://nid.naver.com/login/privacyQR")
-            else
-                loadUrl("https://nid.naver.com/login/privacyQR")
+                if (cookie.getCookie("https://nid.naver.com/login/privacyQR") == null)
+                    loadUrl("https://nid.naver.com/nidlogin.login?url=https://nid.naver.com/login/privacyQR")
+                else
+                    loadUrl("https://nid.naver.com/login/privacyQR")
+            }
         }
     }
 
