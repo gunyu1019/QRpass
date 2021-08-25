@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var mBinding: ActivityMainBinding? = null
     private val binding get() = mBinding!!
     private val pm = PackageManager("checkIn", this@MainActivity)
-    private val naQRBase = naQRBase
+    private val naQRBase = "https://nid.naver.com/login/privacyQR"
 
     private fun getCookies(data: String): Map<String, String> {
         val datas = data.split(";")
