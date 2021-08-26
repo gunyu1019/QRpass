@@ -7,16 +7,19 @@ import android.view.MenuItem
 import android.webkit.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import com.google.android.gms.wearable.DataClient
-import com.google.android.gms.wearable.Wearable
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.wearable.*
 import com.google.android.material.navigation.NavigationView
 import kr.yhs.checkin.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var mBinding: ActivityMainBinding? = null
     private val binding get() = mBinding!!
-    private val pm = PackageManager("checkIn", this@MainActivity)
+    private lateinit var pm: PackageManager
     private val naQRBase = "https://nid.naver.com/login/privacyQR"
+    private lateinit var dataClient: DataClient
+    private var nidNL: Boolean = false;
+
 
     private fun getCookies(data: String): Map<String, String> {
         val datas = data.split(";")
@@ -30,6 +33,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return result
     }
 
+    private fun inputNaKey(): Boolean {
+        if (pm.getString("checkMode") == "na") {
+            val pqr = pm.getString("NID_PQR")
+            val aut = pm.getString("NID_AUT")
+            val ses = pm.getString("NID_SES")
+            val putDataReq: PutDataRequest = PutDataMapRequest.create("/naverKey").run {
+                dataMap.putString("kr.yhs.checkin.na.NID_PQR", pqr ?: "")
+                dataMap.putString("kr.yhs.checkin.na.NID_AUT", aut ?: "")
+                dataMap.putString("kr.yhs.checkin.na.NID_SES", ses ?: "")
+                asPutDataRequest()
+            }
+            val putDataTask: Task<DataItem> = dataClient.putDataItem(putDataReq)
+            // Log.d("Wearable-inputData", putDataTask.result.toString())
+            Log.d("Wearable-inputData", putDataTask.exception.toString())
+            Log.d("Wearable-inputData", "${putDataTask.isCanceled}")
+            return putDataTask.isComplete()
+        }
+        return false
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val cookie = CookieManager.getInstance()
@@ -37,6 +60,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(binding.root)
         if (supportActionBar != null)
             supportActionBar!!.hide()
+        pm = PackageManager("checkIn", this@MainActivity)
         var typeMode = pm.getString("checkMode")
         if (typeMode == null || typeMode == "") {
             pm.setString("checkMode", "na")
@@ -52,15 +76,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             Log.d("cookie", "NID_PQR=${pqr};NID_AUT=${aut};NID_SES=${ses};")
             Log.d("cookie", "cookie=${cookie.getCookie(naQRBase)}")
 
-            var nidNL = false
             if ((pqr == null || aut == null || ses == null) || (pqr == "" || aut == "" || ses == ""))
                 nidNL = true
 
-            val dataClient: DataClient =
+            dataClient =
                 Wearable.WearableOptions.Builder().setLooper(Looper.getMainLooper()).build().let { options ->
                     Wearable.getDataClient(this, options)
                 }
-
 
             binding.webView.apply {
                 settings.apply {
@@ -75,6 +97,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         super.onPageFinished(view, url)
 
                         if (url == naQRBase && nidNL) {
+                            // nidNL = false
                             val data = getCookies(
                                 cookie.getCookie(naQRBase)
                             )
@@ -82,6 +105,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             pm.setString("NID_PQR", data["NID_PQR"] ?: "")
                             pm.setString("NID_AUT", data["NID_AUT"] ?: "")
                             pm.setString("NID_SES", data["NID_SES"] ?: "")
+                            val result = inputNaKey()
+                            Log.d("Wearable", "$result")
                         }
                     }
                 }
@@ -106,10 +131,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val cookie = CookieManager.getInstance()
             cookie.removeAllCookies(null)
             cookie.flush()
-
-            pm.removeKey("NID_PQR")
-            pm.removeKey("NID_AUT")
-            pm.removeKey("NID_SES")
+            if (pm.getString("checkMode") == "na") {
+                nidNL = true
+                pm.removeKey("NID_PQR")
+                pm.removeKey("NID_AUT")
+                pm.removeKey("NID_SES")
+            }
             binding.webView.loadUrl("https://nid.naver.com/nidlogin.login?url=${naQRBase}")
         }
         binding.layerDrawer.closeDrawers()
