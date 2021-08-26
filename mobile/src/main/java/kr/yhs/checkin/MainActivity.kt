@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var pm: PackageManager
     private val naQRBase = "https://nid.naver.com/login/privacyQR"
     private lateinit var dataClient: DataClient
-    private var nidNL: Boolean = false;
+    private var nidNL: Boolean = false
 
 
     private fun getCookies(data: String): Map<String, String> {
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val pqr = pm.getString("NID_PQR")
             val aut = pm.getString("NID_AUT")
             val ses = pm.getString("NID_SES")
-            val putDataReq: PutDataRequest = PutDataMapRequest.create("/naverKey").run {
+            val putDataReq: PutDataRequest = PutDataMapRequest.create("/naKey").run {
                 dataMap.putString("kr.yhs.checkin.na.NID_PQR", pqr ?: "")
                 dataMap.putString("kr.yhs.checkin.na.NID_AUT", aut ?: "")
                 dataMap.putString("kr.yhs.checkin.na.NID_SES", ses ?: "")
@@ -48,7 +48,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             // Log.d("Wearable-inputData", putDataTask.result.toString())
             Log.d("Wearable-inputData", putDataTask.exception.toString())
             Log.d("Wearable-inputData", "${putDataTask.isCanceled}")
-            return putDataTask.isComplete()
+            Log.d("Wearable-inputData", "${putDataTask.isSuccessful}")
+            Log.d("Wearable-inputData", "${putDataTask.isComplete}")
+            return putDataTask.isComplete
         }
         return false
     }
