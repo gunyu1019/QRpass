@@ -1,11 +1,14 @@
 package kr.yhs.checkin
 
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.MenuItem
 import android.webkit.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import com.google.android.gms.wearable.DataClient
+import com.google.android.gms.wearable.Wearable
 import com.google.android.material.navigation.NavigationView
 import kr.yhs.checkin.databinding.ActivityMainBinding
 
@@ -39,14 +42,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             pm.setString("checkMode", "na")
             typeMode = "na"
         }
-
-        binding.webView.settings.apply {
-            javaScriptEnabled = true
-            domStorageEnabled = true
-            allowContentAccess = true
-            allowFileAccess = true
-            setSupportMultipleWindows(true)
-        }
         binding.navigationView.setNavigationItemSelectedListener(this)
 
         if (typeMode == "na") {
@@ -60,9 +55,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             var nidNL = false
             if ((pqr == null || aut == null || ses == null) || (pqr == "" || aut == "" || ses == ""))
                 nidNL = true
-            Log.d("NaverID", "$nidNL")
+
+            val dataClient: DataClient =
+                Wearable.WearableOptions.Builder().setLooper(Looper.getMainLooper()).build().let { options ->
+                    Wearable.getDataClient(this, options)
+                }
+
 
             binding.webView.apply {
+                settings.apply {
+                    javaScriptEnabled = true
+                    domStorageEnabled = true
+                    allowContentAccess = true
+                    allowFileAccess = true
+                    setSupportMultipleWindows(true)
+                }
                 webViewClient = object : WebViewClient() {
                     override fun onPageFinished(view: WebView?, url: String?) {
                         super.onPageFinished(view, url)
@@ -71,8 +78,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             val data = getCookies(
                                 cookie.getCookie(naQRBase)
                             )
-
-                            Log.d("cookie", "$data")
 
                             pm.setString("NID_PQR", data["NID_PQR"] ?: "")
                             pm.setString("NID_AUT", data["NID_AUT"] ?: "")

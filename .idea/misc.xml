@@ -3,13 +3,20 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidStudio/QRcheck/mobile/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3764102564102564" />
+        <entry key="..\:/AndroidStudio/QRcheck/mobile/src/main/res/drawable/ic_baseline_menu_64.xml" value="0.3764102564102564" />
+        <entry key="..\:/AndroidStudio/QRcheck/mobile/src/main/res/drawable/ic_launcher_background.xml" value="0.3764102564102564" />
         <entry key="..\:/AndroidStudio/QRcheck/mobile/src/main/res/drawable/ic_search_black_24dp.xml" value="0.3764102564102564" />
         <entry key="..\:/AndroidStudio/QRcheck/mobile/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/AndroidStudio/QRcheck/mobile/src/main/res/layout/switch_item.xml" value="0.36614583333333334" />
         <entry key="..\:/AndroidStudio/QRcheck/mobile/src/main/res/menu/menu.xml" value="0.29270833333333335" />
         <entry key="..\:/AndroidStudio/QRcheck/mobile/src/main/res/menu/sidemenu.xml" value="0.36614583333333334" />
+        <entry key="..\:/AndroidStudio/QRcheck/mobile/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.3764102564102564" />
+        <entry key="..\:/AndroidStudio/QRcheck/mobile/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.22083333333333333" />
+        <entry key="..\:/AndroidStudio/QRcheck/wear/src/main/res/drawable/ic_launcher_background.xml" value="1.0692307692307692" />
         <entry key="..\:/AndroidStudio/QRcheck/wear/src/main/res/layout/activity_main.xml" value="1.1102564102564103" />
         <entry key="..\:/AndroidStudio/QRcheck/wear/src/main/res/menu/menu.xml" value="1.441025641025641" />
+        <entry key="..\:/AndroidStudio/QRcheck/wear/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="1.0692307692307692" />
       </map>
     </option>
   </component>
