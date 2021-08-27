@@ -18,7 +18,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var pm: PackageManager
     private val naQRBase = "https://nid.naver.com/login/privacyQR"
     private lateinit var dataClient: DataClient
+
     private var nidNL: Boolean = false
+    private val login: Boolean
+        get() {
+            return this.nidNL
+        }
 
 
     private fun getCookies(data: String): Map<String, String> {
@@ -34,6 +39,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun inputKey() {
+        Log.d("inputKey", "input-Key")
         if (pm.getString("checkMode") == "na") {
             val pqr = pm.getString("NID_PQR")
             val aut = pm.getString("NID_AUT")
