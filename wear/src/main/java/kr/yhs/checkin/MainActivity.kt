@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.opengl.Visibility
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.service.autofill.VisibilitySetterAction
 import android.util.Base64
 import android.util.Log
@@ -13,6 +14,7 @@ import com.google.android.gms.common.api.Status
 import com.google.android.gms.wearable.*
 import kr.yhs.checkin.databinding.ActivityMainBinding
 import org.jsoup.Jsoup
+import kotlin.concurrent.timer
 
 class MainActivity : Activity(), DataClient.OnDataChangedListener {
     private var mBinding: ActivityMainBinding? = null
@@ -53,9 +55,25 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
                             binding.main.visibility = View.VISIBLE
                             binding.progressLayout.visibility = View.GONE
                             binding.warningLayout.visibility = View.GONE
+                            binding.refreshBtn.visibility = View.GONE
                             loadImage(base64.toString())
                             binding.privateNumberText.text = number
                             binding.count.text = "15초"
+
+                            var second = 0
+                            timer(period = 1000, initialDelay = 1000) {
+                                runOnUiThread {
+                                    binding.count.text = "${15 - second}초"
+                                }
+                                second ++
+                                if (second == 15) {
+                                    runOnUiThread {
+                                        binding.refreshBtn.visibility = View.VISIBLE
+                                    }
+                                    cancel()
+                                }
+                            }
+                            return@Runnable
                         })
                     }
                 }
@@ -80,6 +98,10 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
         binding.main.visibility = View.GONE
         binding.progressLayout.visibility = View.VISIBLE
         binding.warningLayout.visibility = View.GONE
+
+        binding.refreshBtn.setOnClickListener {
+            getImage()
+        }
 
         pm = PackageManager("checkIn", this@MainActivity)
         val pqr = pm.getString("NID_PQR")
@@ -127,6 +149,11 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
                                 pm.setString("NID_PQR", pqr)
                                 pm.setString("NID_AUT", aut)
                                 pm.setString("NID_SES", ses)
+
+                                binding.main.visibility = View.GONE
+                                binding.progressLayout.visibility = View.VISIBLE
+                                binding.warningLayout.visibility = View.GONE
+                                getImage()
                             }
                         }
                     }
