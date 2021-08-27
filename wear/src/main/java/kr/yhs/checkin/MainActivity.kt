@@ -3,14 +3,10 @@ package kr.yhs.checkin
 import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.opengl.Visibility
 import android.os.Bundle
-import android.os.CountDownTimer
-import android.service.autofill.VisibilitySetterAction
 import android.util.Base64
 import android.util.Log
 import android.view.View
-import com.google.android.gms.common.api.Status
 import com.google.android.gms.wearable.*
 import kr.yhs.checkin.databinding.ActivityMainBinding
 import org.jsoup.Jsoup
