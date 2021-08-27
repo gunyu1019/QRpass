@@ -14,7 +14,7 @@
         android:title="플랫폼 변경"
         android:visible="true" />
     <item
-        android:id="@+id/wearable_send"
+        android:id="@+id/wearable_connection"
         android:title="웨어러블"
         app:actionLayout="@layout/switch_item" />
 </menu>
