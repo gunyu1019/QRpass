@@ -3,11 +3,11 @@ package kr.yhs.checkin
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.webkit.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import com.google.android.gms.tasks.Task
 import com.google.android.gms.wearable.*
 import com.google.android.material.navigation.NavigationView
 import kr.yhs.checkin.databinding.ActivityMainBinding
@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return result
     }
 
-    private fun inputNaKey(): Boolean {
+    private fun inputKey() {
         if (pm.getString("checkMode") == "na") {
             val pqr = pm.getString("NID_PQR")
             val aut = pm.getString("NID_AUT")
@@ -44,15 +44,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 dataMap.putString("kr.yhs.checkin.na.NID_SES", ses ?: "")
                 asPutDataRequest()
             }
-            val putDataTask: Task<DataItem> = dataClient.putDataItem(putDataReq)
-            // Log.d("Wearable-inputData", putDataTask.result.toString())
-            Log.d("Wearable-inputData", putDataTask.exception.toString())
-            Log.d("Wearable-inputData", "${putDataTask.isCanceled}")
-            Log.d("Wearable-inputData", "${putDataTask.isSuccessful}")
-            Log.d("Wearable-inputData", "${putDataTask.isComplete}")
-            return putDataTask.isComplete
+            dataClient.putDataItem(putDataReq)
         }
-        return false
+        return
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        if (menu == null)
+            return super.onPrepareOptionsMenu(menu)
+        val logInOut = menu.findItem(R.id.log_inout)
+
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -107,8 +109,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             pm.setString("NID_PQR", data["NID_PQR"] ?: "")
                             pm.setString("NID_AUT", data["NID_AUT"] ?: "")
                             pm.setString("NID_SES", data["NID_SES"] ?: "")
-                            val result = inputNaKey()
-                            Log.d("Wearable", "$result")
+                            inputKey()
                         }
                     }
                 }
@@ -128,7 +129,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.logout) {
+        if (item.itemId == R.id.log_inout) {
             Log.d("onNavigationItemSelected", "${item.itemId}")
             val cookie = CookieManager.getInstance()
             cookie.removeAllCookies(null)

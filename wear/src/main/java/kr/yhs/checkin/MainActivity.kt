@@ -50,8 +50,6 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
                             if ((pqr == null || aut == null || ses == null) || (pqr == "" || aut == "" || ses == ""))
                                 nidNL = true
 
-                            Log.d("Wearable-inputData", "NID_PQR=${pqr};NID_AUT=${aut};NID_SES=${ses};")
-
                             if (!nidNL) {
                                 pm.setString("NID_PQR", pqr)
                                 pm.setString("NID_AUT", aut)
