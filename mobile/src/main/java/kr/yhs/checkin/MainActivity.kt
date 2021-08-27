@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         menuInflater.inflate(R.menu.sidemenu, menu)
         val logInOut: MenuItem = menu.findItem(R.id.log_inout)
-        logInOut.setVisible(login)
+        logInOut.isVisible = login
 
         val wearableConnection = menu.findItem(R.id.wearable_connection)
         val actionView = wearableConnection.actionView
@@ -163,24 +163,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         Log.d("onNavigationItemSelected", "${item.itemId}")
-        if (item.itemId == R.id.log_inout) {
-            val cookie = CookieManager.getInstance()
-            cookie.removeAllCookies(null)
-            cookie.flush()
-            if (pm.getString("checkMode") == "na") {
-                nidNL = true
-                pm.removeKey("NID_PQR")
-                pm.removeKey("NID_AUT")
-                pm.removeKey("NID_SES")
+        when (item.itemId) {
+            R.id.log_inout -> {
+                val cookie = CookieManager.getInstance()
+                cookie.removeAllCookies(null)
+                cookie.flush()
+                if (pm.getString("checkMode") == "na") {
+                    nidNL = true
+                    pm.removeKey("NID_PQR")
+                    pm.removeKey("NID_AUT")
+                    pm.removeKey("NID_SES")
+                }
+                binding.webView.loadUrl("https://nid.naver.com/nidlogin.login?url=${naQRBase}")
             }
-            binding.webView.loadUrl("https://nid.naver.com/nidlogin.login?url=${naQRBase}")
-        } else if (item.itemId == R.id.wearable_connection) {
-            val view = item.actionView
-            settingWearableConnection = view.findViewById<Switch>(R.id.keySwitch).isChecked
-            Log.d("settingWearableConnection", "$settingWearableConnection")
-            return false
-        } else if (item.itemId == R.id.platform_change) {
-            Toast.makeText(this, "아직 네이버 밖에 지원하지 않습니다.", Toast.LENGTH_SHORT).show()
+            R.id.wearable_connection -> {
+                val view = item.actionView
+                settingWearableConnection = view.findViewById<Switch>(R.id.keySwitch).isChecked
+                Log.d("settingWearableConnection", "$settingWearableConnection")
+                return false
+            }
+            R.id.platform_change -> {
+                Toast.makeText(this, "아직 네이버 밖에 지원하지 않습니다.", Toast.LENGTH_SHORT).show()
+            }
         }
         binding.layerDrawer.closeDrawers()
 
