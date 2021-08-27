@@ -3,6 +3,7 @@ package kr.yhs.checkin
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.*
@@ -55,12 +56,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         if (menu == null)
             return super.onPrepareOptionsMenu(menu)
-        val logInOut = menu.findItem(R.id.log_inout)
-
-        return super.onPrepareOptionsMenu(menu)
+        menuInflater.inflate(R.menu.sidemenu, menu)
+        val logInOut: MenuItem = menu.findItem(R.id.log_inout)
+        if (logInOut != null) {
+            Log.d("LogInOut", "$login")
+            logInOut.setVisible(false)
+        }
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,6 +82,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             typeMode = "na"
         }
         binding.navigationView.setNavigationItemSelectedListener(this)
+        binding.settingButton.setOnClickListener {
+            binding.layerDrawer.openDrawer(GravityCompat.END)
+        }
 
         if (typeMode == "na") {
             val pqr = pm.getString("NID_PQR")

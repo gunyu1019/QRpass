@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/log_inout"
-            android:title="@string/logout" />
-    </group>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        app:actionLayout="@layout/main_item"
+        android:title="" />
+    <item
+        android:id="@+id/log_inout"
+        android:title="@string/logout"
+        android:visible="true" />
+    <item
+        android:id="@+id/platform_change"
+        android:title="플랫폼 변경"
+        android:visible="true" />
+    <item
+        android:id="@+id/wearable_send"
+        android:title="웨어러블"
+        app:actionLayout="@layout/switch_item" />
 </menu>

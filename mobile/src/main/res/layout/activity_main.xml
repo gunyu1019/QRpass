@@ -5,6 +5,7 @@
     android:id="@+id/layer_drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     android:theme="@style/Theme.AppCompat.Light.NoActionBar"
     tools:context=".MainActivity">
 
@@ -24,13 +25,26 @@
             app:layout_constraintVertical_bias="1.0">
 
         </WebView>
+
+        <ImageView
+            android:id="@+id/settingButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/webView"
+            app:srcCompat="@drawable/ic_baseline_settings_64" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="right"
+        android:layout_gravity="end"
+        android:background="#FFFFFF"
+        app:itemTextColor="#000000"
         app:menu="@menu/sidemenu" />
 
 
