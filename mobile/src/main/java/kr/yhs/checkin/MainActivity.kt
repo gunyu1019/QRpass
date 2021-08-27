@@ -5,20 +5,15 @@ import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.webkit.*
 import android.widget.CompoundButton
 import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.GravityCompat
-import androidx.core.view.MenuItemCompat
 import com.google.android.gms.wearable.*
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.switchmaterial.SwitchMaterial
 import kr.yhs.checkin.databinding.ActivityMainBinding
-import kr.yhs.checkin.databinding.SwitchItemBinding
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     CompoundButton.OnCheckedChangeListener {
