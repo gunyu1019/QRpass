@@ -19,10 +19,6 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
     private lateinit var typeMode: String
 
     private var nidNL: Boolean = false
-    private val login: Boolean
-        get() {
-            return this.nidNL
-        }
 
     private fun loadImage(base64: String) {
         val base64Image: String = base64.split(",")[1]
@@ -31,7 +27,7 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
         binding.imageView.setImageBitmap(bitmap)
     }
 
-    private fun getImage() {
+    private fun webMain() {
         if (typeMode == "na") {
             val pqr = pm.getString("NID_PQR")
             val aut = pm.getString("NID_AUT")
@@ -41,34 +37,59 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
                     val response = Jsoup.connect("https://nid.naver.com/login/privacyQR")
                         .header("Cookie", "NID_PQR=${pqr};NID_AUT=${aut};NID_SES=${ses};")
                         .get()
-                    val area = response.select("div.qr_wrap div.qr_area")
-                    area.apply {
-                        val base64 = select("div.qr_box img").attr("src")
-                        val numberHTML = select("div.number_box span.number")
-                        val number = numberHTML.text()
+                    val html = response.body()
+                    if (html.select("div.qr_wrap").html() != "") {
+                        val wrap = html.select("div.qr_wrap")
+                        if (wrap.select("div.qr_area").html() != "") {
+                            val area = wrap.select("div.qr_area")
+                            val base64 = area.select("div.qr_box img").attr("src")
+                            val numberHTML = area.select("div.number_box span.number")
+                            val number = numberHTML.text()
 
-                        this@MainActivity.runOnUiThread(java.lang.Runnable {
-                            binding.main.visibility = View.VISIBLE
-                            binding.progressLayout.visibility = View.GONE
-                            binding.warningLayout.visibility = View.GONE
-                            binding.refreshBtn.visibility = View.GONE
-                            loadImage(base64.toString())
-                            binding.privateNumberText.text = number
-                            binding.count.text = "15초"
+                            this@MainActivity.runOnUiThread(java.lang.Runnable {
+                                binding.main.visibility = View.VISIBLE
+                                binding.progressLayout.visibility = View.GONE
+                                binding.warningLayout.visibility = View.GONE
+                                binding.refreshBtn.visibility = View.GONE
 
-                            var second = 0
-                            timer(period = 1000, initialDelay = 1000) {
-                                runOnUiThread {
-                                    binding.count.text = "${15 - second}초"
-                                }
-                                second ++
-                                if (second == 15) {
+                                loadImage(base64.toString())
+                                binding.privateNumberText.text = number
+                                binding.count.text = getString(R.string.count, 15)
+
+                                var second = 0
+                                timer(period = 1000, initialDelay = 1000) {
                                     runOnUiThread {
-                                        binding.refreshBtn.visibility = View.VISIBLE
+                                        binding.count.text = getString(R.string.count, second)
                                     }
-                                    cancel()
+                                    second++
+                                    if (second == 15) {
+                                        runOnUiThread {
+                                            binding.refreshBtn.visibility = View.VISIBLE
+                                        }
+                                        cancel()
+                                    }
                                 }
-                            }
+                                return@Runnable
+                            })
+                        } else if (wrap.select(".self_box").html() != "") {
+                            this@MainActivity.runOnUiThread(java.lang.Runnable {
+                                binding.main.visibility = View.GONE
+                                binding.progressLayout.visibility = View.GONE
+                                binding.warningLayout.visibility = View.VISIBLE
+                                binding.refreshBtn.visibility = View.GONE
+
+                                binding.warningMessage.text = getString(R.string.need_authorize)
+                                return@Runnable
+                            })
+                        }
+                    } else if (html.select(".login_wrap").html() != "") {
+                        this@MainActivity.runOnUiThread(java.lang.Runnable {
+                            binding.main.visibility = View.GONE
+                            binding.progressLayout.visibility = View.GONE
+                            binding.warningLayout.visibility = View.VISIBLE
+                            binding.refreshBtn.visibility = View.GONE
+
+                            binding.warningMessage.text = getString(R.string.need_login)
                             return@Runnable
                         })
                     }
@@ -96,7 +117,7 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
         binding.warningLayout.visibility = View.GONE
 
         binding.refreshBtn.setOnClickListener {
-            getImage()
+            webMain()
         }
 
         pm = PackageManager("checkIn", this@MainActivity)
@@ -110,7 +131,7 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
             binding.progressLayout.visibility = View.GONE
             binding.warningLayout.visibility = View.VISIBLE
 
-            binding.warningMessage.text = "휴대폰에서 설정해주세요."
+            binding.warningMessage.text = getString(R.string.phone)
         } else {
             binding.main.visibility = View.GONE
             binding.progressLayout.visibility = View.VISIBLE
@@ -121,7 +142,7 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
             Log.d("cookie", "NID_PQR=${pqr};NID_AUT=${aut};NID_SES=${ses};")
             if ((pqr == null || aut == null || ses == null) || (pqr == "" || aut == "" || ses == ""))
                 nidNL = true
-            getImage()
+            webMain()
         }
     }
 
@@ -149,7 +170,7 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
                                 binding.main.visibility = View.GONE
                                 binding.progressLayout.visibility = View.VISIBLE
                                 binding.warningLayout.visibility = View.GONE
-                                getImage()
+                                webMain()
                             }
                         }
                     }

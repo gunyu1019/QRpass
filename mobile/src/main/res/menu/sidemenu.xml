@@ -3,15 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        app:actionLayout="@layout/main_item"
-        android:title="" />
+        android:title=""
+        app:actionLayout="@layout/main_item" />
     <item
         android:id="@+id/log_inout"
         android:title="@string/logout"
-        android:visible="true" />
-    <item
-        android:id="@+id/platform_change"
-        android:title="플랫폼 변경"
         android:visible="true" />
     <item
         android:id="@+id/wearable_connection"

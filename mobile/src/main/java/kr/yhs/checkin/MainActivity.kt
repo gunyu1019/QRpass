@@ -2,13 +2,11 @@ package kr.yhs.checkin
 
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.*
 import android.widget.CompoundButton
 import android.widget.Switch
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.google.android.gms.wearable.*
@@ -44,7 +42,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun inputKey() {
-        Log.d("inputKey", "input-Key")
         if (pm.getString("checkMode") == "na") {
             val pqr = pm.getString("NID_PQR")
             val aut = pm.getString("NID_AUT")
@@ -63,16 +60,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         if (menu == null)
             return super.onPrepareOptionsMenu(menu)
-        Log.d("onCreateOptionsMenu", "onCreateOptionsMenu")
-
-
         menuInflater.inflate(R.menu.sidemenu, menu)
         val logInOut: MenuItem = menu.findItem(R.id.log_inout)
         logInOut.isVisible = login
 
         val wearableConnection = menu.findItem(R.id.wearable_connection)
         val actionView = wearableConnection.actionView
-        Log.d("onCreateOptionsMenu", "${actionView.findViewById<Switch>(R.id.keySwitch)}")
         actionView.findViewById<Switch>(R.id.keySwitch).setOnCheckedChangeListener(this)
         return super.onCreateOptionsMenu(menu)
     }
@@ -105,9 +98,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val aut = pm.getString("NID_AUT")
             val ses = pm.getString("NID_SES")
 
-            Log.d("cookie", "NID_PQR=${pqr};NID_AUT=${aut};NID_SES=${ses};")
-            Log.d("cookie", "cookie=${cookie.getCookie(naQRBase)}")
-
             if ((pqr == null || aut == null || ses == null) || (pqr == "" || aut == "" || ses == ""))
                 nidNL = true
 
@@ -129,7 +119,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         super.onPageFinished(view, url)
 
                         if (url == naQRBase && nidNL) {
-                            // nidNL = false
                             val data = getCookies(
                                 cookie.getCookie(naQRBase)
                             )
@@ -137,7 +126,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             pm.setString("NID_PQR", data["NID_PQR"] ?: "")
                             pm.setString("NID_AUT", data["NID_AUT"] ?: "")
                             pm.setString("NID_SES", data["NID_SES"] ?: "")
-                            inputKey()
+                            if (settingWearableConnection)
+                                inputKey()
+                        } else if (url?:"".indexOf("https://nid.naver.com/nidlogin.login") == 0) {
+                            nidNL = false
                         }
                     }
                 }
@@ -157,7 +149,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        Log.d("onNavigationItemSelected", "${item.itemId}")
         when (item.itemId) {
             R.id.log_inout -> {
                 val cookie = CookieManager.getInstance()
@@ -174,11 +165,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.wearable_connection -> {
                 val view = item.actionView
                 settingWearableConnection = view.findViewById<Switch>(R.id.keySwitch).isChecked
-                Log.d("settingWearableConnection", "$settingWearableConnection")
+                inputKey()
                 return false
-            }
-            R.id.platform_change -> {
-                Toast.makeText(this, "아직 네이버 밖에 지원하지 않습니다.", Toast.LENGTH_SHORT).show()
             }
         }
         binding.layerDrawer.closeDrawers()
@@ -195,8 +183,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-        // TODO(Why Not Worked..)
         settingWearableConnection = isChecked
-        Log.d("settingWearableConnection", "$settingWearableConnection")
     }
 }
