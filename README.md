@@ -3,8 +3,9 @@
 </p>
 <h1 align="center">QR Check-In</h1>
 <p align="center">
-  <b>My first android-application project!</b>
+  <b>네이버 QR체크인을 보다 쉽게!</b>
 </p>
 
 ### Introduce
-네이버와 카카오 QR체크인을 보다 쉽게!
+QR체크인으로 바로 연결되는 어플 입니다. 
+Wear OS를 지원하며, 웨어러블에서도 QR체크인을 편리하게 이용하실 수 있습니다.
