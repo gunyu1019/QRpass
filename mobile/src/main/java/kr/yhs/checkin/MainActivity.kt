@@ -132,6 +132,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             nidNL = false
                         }
                     }
+
                 }
                 val delicious = cookie.getCookie(naQRBase)
                 if (delicious == null && nidNL)
@@ -142,6 +143,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             naQRBase,
                             "NID_PQR=${pqr};NID_AUT=${aut};NID_SES=${ses};"
                         )
+                        if (settingWearableConnection) {
+                            inputKey()
+                        }
                     }
                 loadUrl(naQRBase)
             }
@@ -165,7 +169,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.wearable_connection -> {
                 val view = item.actionView
                 settingWearableConnection = view.findViewById<Switch>(R.id.keySwitch).isChecked
-                inputKey()
+                if (settingWearableConnection)
+                    inputKey()
                 return false
             }
         }

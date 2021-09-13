@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="개인용 번호"
+            android:text="@string/description_privacy_key"
             android:textAlignment="center"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:text="0초"
+            android:text="@string/count"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -71,7 +71,7 @@
         android:id="@+id/warningLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/warningMessage"

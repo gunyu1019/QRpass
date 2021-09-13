@@ -4,6 +4,7 @@
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.
     -->
+    <string name="description_privacy_key">개인용 번호</string>
     <string name="phone">휴대폰에서 설정해주세요.</string>
     <string name="need_login">로그인이 만료되었습니다. 재설정이 필요합니다.</string>
     <string name="count">%d 초</string>

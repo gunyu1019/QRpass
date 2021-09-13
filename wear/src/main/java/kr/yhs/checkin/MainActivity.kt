@@ -17,8 +17,7 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
     private val binding get() = mBinding!!
     private lateinit var pm: PackageManager
     private lateinit var typeMode: String
-
-    private var nidNL: Boolean = false
+    private lateinit var privacyNumber: String;
 
     private fun loadImage(base64: String) {
         val base64Image: String = base64.split(",")[1]
@@ -44,7 +43,7 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
                             val area = wrap.select("div.qr_area")
                             val base64 = area.select("div.qr_box img").attr("src")
                             val numberHTML = area.select("div.number_box span.number")
-                            val number = numberHTML.text()
+                            privacyNumber = numberHTML.text()
 
                             this@MainActivity.runOnUiThread(java.lang.Runnable {
                                 binding.main.visibility = View.VISIBLE
@@ -53,13 +52,13 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
                                 binding.refreshBtn.visibility = View.GONE
 
                                 loadImage(base64.toString())
-                                binding.privateNumberText.text = number
+                                binding.privateNumberText.text = privacyNumber
                                 binding.count.text = getString(R.string.count, 15)
 
                                 var second = 0
                                 timer(period = 1000, initialDelay = 1000) {
                                     runOnUiThread {
-                                        binding.count.text = getString(R.string.count, second)
+                                        binding.count.text = getString(R.string.count, 15 - second)
                                     }
                                     second++
                                     if (second == 15) {
@@ -119,6 +118,12 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
         binding.refreshBtn.setOnClickListener {
             webMain()
         }
+        binding.privateNumberText.setOnClickListener {
+            if (binding.privateNumberText.text == getString(R.string.description_privacy_key) && privacyNumber != null)
+                binding.privateNumberText.text = privacyNumber
+            else
+                binding.privateNumberText.text = getString(R.string.description_privacy_key)
+        }
 
         pm = PackageManager("checkIn", this@MainActivity)
         val pqr = pm.getString("NID_PQR")
@@ -140,8 +145,6 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
 
         if (typeMode == "na") {
             Log.d("cookie", "NID_PQR=${pqr};NID_AUT=${aut};NID_SES=${ses};")
-            if ((pqr == null || aut == null || ses == null) || (pqr == "" || aut == "" || ses == ""))
-                nidNL = true
             webMain()
         }
     }
@@ -157,21 +160,15 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
                             val pqr = getString("kr.yhs.checkin.na.NID_PQR")
                             val aut = getString("kr.yhs.checkin.na.NID_AUT")
                             val ses = getString("kr.yhs.checkin.na.NID_SES")
-                            var nidNL = false
-                            if ((pqr == null || aut == null || ses == null) || (pqr == "" || aut == "" || ses == ""))
-                                nidNL = true
-
                             pm.setString("checkMode", "na")
-                            if (!nidNL) {
-                                pm.setString("NID_PQR", pqr)
-                                pm.setString("NID_AUT", aut)
-                                pm.setString("NID_SES", ses)
+                            pm.setString("NID_PQR", pqr)
+                            pm.setString("NID_AUT", aut)
+                            pm.setString("NID_SES", ses)
 
-                                binding.main.visibility = View.GONE
-                                binding.progressLayout.visibility = View.VISIBLE
-                                binding.warningLayout.visibility = View.GONE
-                                webMain()
-                            }
+                            binding.main.visibility = View.GONE
+                            binding.progressLayout.visibility = View.VISIBLE
+                            binding.warningLayout.visibility = View.GONE
+                            webMain()
                         }
                     }
                 }
