@@ -5,7 +5,7 @@
     android:innerRadiusRatio="3"
     android:useLevel="false"
     >
-    <stroke android:color="#000000"
+    <stroke android:color="#505050"
         android:width="3dp"/>
     <solid android:color="#FFFFFF"/>
 </shape>

@@ -17,7 +17,7 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
     private val binding get() = mBinding!!
     private lateinit var pm: PackageManager
     private lateinit var typeMode: String
-    private lateinit var privacyNumber: String;
+    private var privacyNumber: String = ""
 
     private fun loadImage(base64: String) {
         val base64Image: String = base64.split(",")[1]
@@ -119,7 +119,7 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
             webMain()
         }
         binding.privateNumberText.setOnClickListener {
-            if (binding.privateNumberText.text == getString(R.string.description_privacy_key) && privacyNumber != null)
+            if (binding.privateNumberText.text == getString(R.string.description_privacy_key) && privacyNumber != "")
                 binding.privateNumberText.text = privacyNumber
             else
                 binding.privateNumberText.text = getString(R.string.description_privacy_key)
@@ -161,9 +161,9 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
                             val aut = getString("kr.yhs.checkin.na.NID_AUT")
                             val ses = getString("kr.yhs.checkin.na.NID_SES")
                             pm.setString("checkMode", "na")
-                            pm.setString("NID_PQR", pqr)
-                            pm.setString("NID_AUT", aut)
-                            pm.setString("NID_SES", ses)
+                            pm.setString("NID_PQR", pqr?:"")
+                            pm.setString("NID_AUT", aut?:"")
+                            pm.setString("NID_SES", ses?:"")
 
                             binding.main.visibility = View.GONE
                             binding.progressLayout.visibility = View.VISIBLE
