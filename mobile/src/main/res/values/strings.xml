@@ -3,4 +3,11 @@
     <string name="setting">설정</string>
     <string name="logout">로그아웃</string>
     <string name="wearable">웨어러블</string>
+    <string name="image_content_description">main_qr_code</string>
+    <string name="private_code_description">개인용 번호</string>
+    <string name="private_code_example">12가34나</string>
+    <string name="count_example">15초</string>
+    <string name="information">QR코드 출처: 네이버(Naver)</string>
+    <string name="title">입장하기 위한 QR코드</string>
+    <string name="description">이용하려는 시설에 QR코드로 체크인하거나 명부에 전화번호 대신 안심번호를 기재하세요.</string>
 </resources>

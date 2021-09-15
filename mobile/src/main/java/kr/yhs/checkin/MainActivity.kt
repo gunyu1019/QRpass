@@ -2,32 +2,27 @@ package kr.yhs.checkin
 
 import android.os.Bundle
 import android.os.Looper
-import android.view.Menu
-import android.view.MenuItem
-import android.webkit.*
-import android.widget.CompoundButton
-import android.widget.Switch
+import android.view.View
+import android.webkit.CookieManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
-import com.google.android.gms.wearable.*
-import com.google.android.material.navigation.NavigationView
+import androidx.core.view.isInvisible
+import com.google.android.gms.wearable.DataClient
+import com.google.android.gms.wearable.PutDataMapRequest
+import com.google.android.gms.wearable.PutDataRequest
+import com.google.android.gms.wearable.Wearable
 import kr.yhs.checkin.databinding.ActivityMainBinding
+import android.view.animation.TranslateAnimation
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-    CompoundButton.OnCheckedChangeListener {
+
+
+
+class MainActivity : AppCompatActivity() {
     private var mBinding: ActivityMainBinding? = null
     private val binding get() = mBinding!!
     private lateinit var pm: PackageManager
-    private val naQRBase = "https://nid.naver.com/login/privacyQR"
     private lateinit var dataClient: DataClient
-    private var settingWearableConnection: Boolean = false
 
-    private var nidNL: Boolean = false
-    private val login: Boolean
-        get() {
-            return this.nidNL
-        }
-
+    private var login: Boolean = false
 
     private fun getCookies(data: String): Map<String, String> {
         val datas = data.split(";")
@@ -56,138 +51,61 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         return
     }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        if (menu == null)
-            return super.onPrepareOptionsMenu(menu)
-        menuInflater.inflate(R.menu.sidemenu, menu)
-        val logInOut: MenuItem = menu.findItem(R.id.log_inout)
-        logInOut.isVisible = login
-
-        val wearableConnection = menu.findItem(R.id.wearable_connection)
-        val actionView = wearableConnection.actionView
-        actionView.findViewById<Switch>(R.id.keySwitch).setOnCheckedChangeListener(this)
-        return super.onCreateOptionsMenu(menu)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val cookie = CookieManager.getInstance()
+        pm = PackageManager("checkIn", this@MainActivity)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.webViewLayout.visibility = View.INVISIBLE
         if (supportActionBar != null)
             supportActionBar!!.hide()
-        pm = PackageManager("checkIn", this@MainActivity)
         var typeMode = pm.getString("checkMode")
         if (typeMode == null || typeMode == "") {
             pm.setString("checkMode", "na")
             typeMode = "na"
         }
-        settingWearableConnection = pm.getBoolean("settingWearableConnection")
-        if (!settingWearableConnection) {
-            settingWearableConnection = false
-            pm.setBoolean("settingWearableConnection", false)
-        }
-        binding.navigationView.setNavigationItemSelectedListener(this)
-        binding.settingButton.setOnClickListener {
-            binding.layerDrawer.openDrawer(GravityCompat.END)
+
+        dataClient = Wearable.WearableOptions.Builder().setLooper(Looper.getMainLooper()).build().let { options ->
+            Wearable.getDataClient(this, options)
         }
 
         if (typeMode == "na") {
             val pqr = pm.getString("NID_PQR")
             val aut = pm.getString("NID_AUT")
             val ses = pm.getString("NID_SES")
-
             if ((pqr == null || aut == null || ses == null) || (pqr == "" || aut == "" || ses == ""))
-                nidNL = true
+                login = true
 
-            dataClient =
-                Wearable.WearableOptions.Builder().setLooper(Looper.getMainLooper()).build().let { options ->
-                    Wearable.getDataClient(this, options)
-                }
-
-            binding.webView.apply {
-                settings.apply {
-                    javaScriptEnabled = true
-                    domStorageEnabled = true
-                    allowContentAccess = true
-                    allowFileAccess = true
-                    setSupportMultipleWindows(true)
-                }
-                webViewClient = object : WebViewClient() {
-                    override fun onPageFinished(view: WebView?, url: String?) {
-                        super.onPageFinished(view, url)
-
-                        if (url == naQRBase && nidNL) {
-                            val data = getCookies(
-                                cookie.getCookie(naQRBase)
-                            )
-
-                            pm.setString("NID_PQR", data["NID_PQR"] ?: "")
-                            pm.setString("NID_AUT", data["NID_AUT"] ?: "")
-                            pm.setString("NID_SES", data["NID_SES"] ?: "")
-                            if (settingWearableConnection)
-                                inputKey()
-                        } else if (url?:"".indexOf("https://nid.naver.com/nidlogin.login") == 0) {
-                            nidNL = false
-                        }
-                    }
-
-                }
-                val naCookie = cookie.getCookie(naQRBase)
-                if (naCookie == null && nidNL)
-                    loadUrl("https://nid.naver.com/nidlogin.login?url=${naQRBase}")
-                else
-                    if (naCookie == null) {
-                        cookie.setCookie(
-                            naQRBase,
-                            "NID_PQR=${pqr};NID_AUT=${aut};NID_SES=${ses};"
-                        )
-                        if (settingWearableConnection) {
-                            inputKey()
-                        }
-                    }
-                loadUrl(naQRBase)
+            if (login) {
+                slideUp(binding.webViewLayout)
             }
         }
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.log_inout -> {
-                val cookie = CookieManager.getInstance()
-                cookie.removeAllCookies(null)
-                cookie.flush()
-                if (pm.getString("checkMode") == "na") {
-                    nidNL = true
-                    pm.removeKey("NID_PQR")
-                    pm.removeKey("NID_AUT")
-                    pm.removeKey("NID_SES")
-                }
-                binding.webView.loadUrl("https://nid.naver.com/nidlogin.login?url=${naQRBase}")
-            }
-            R.id.wearable_connection -> {
-                val view = item.actionView
-                settingWearableConnection = view.findViewById<Switch>(R.id.keySwitch).isChecked
-                if (settingWearableConnection)
-                    inputKey()
-                return false
-            }
-        }
-        binding.layerDrawer.closeDrawers()
-
-        return false
+    fun slideUp(view: View) {
+        view.visibility = View.VISIBLE
+        val animate = TranslateAnimation(
+            0F,
+            0F,
+            view.height.toFloat(),
+            0F,
+        )
+        animate.duration = 500
+        animate.fillAfter = true
+        view.startAnimation(animate)
     }
 
-    override fun onBackPressed() {
-        if (binding.layerDrawer.isDrawerOpen(GravityCompat.END)) {
-            binding.layerDrawer.closeDrawers()
-        } else {
-            super.onBackPressed()
-        }
-    }
-
-    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-        settingWearableConnection = isChecked
+    fun slideDown(view: View) {
+        val animate = TranslateAnimation(
+            0F,
+            0F,
+            0F,
+            view.height.toFloat()
+        )
+        animate.duration = 500
+        animate.fillAfter = true
+        view.startAnimation(animate)
     }
 }

@@ -5,6 +5,8 @@
     android:id="@+id/layer_drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:theme="@style/Theme.AppCompat.Light.NoActionBar"
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -44,7 +46,7 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginStart="50dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="50dp"
             android:layout_weight="0"
             android:background="@drawable/private_code_layout_background"
@@ -122,15 +124,13 @@
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="32dp"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="16dp"
             android:gravity="center"
             android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/mainQR"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintStart_toStartOf="parent">
 
             <TextView
                 android:id="@+id/textTitle"
@@ -156,13 +156,13 @@
     <LinearLayout
         android:id="@+id/webViewLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="200dp"
         android:layout_alignParentBottom="true"
-        android:background="#FFFFFF"
-        android:orientation="vertical">
+        android:background="#a6e1aa"
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <WebView
-            android:id="@+id/webViewFrame"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
