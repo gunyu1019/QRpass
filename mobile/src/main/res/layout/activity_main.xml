@@ -79,6 +79,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linearLayout2"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginStart="16dp"
@@ -151,6 +152,17 @@
                 android:textAlignment="center" />
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/refreshBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/radius"
+            app:layout_constraintBottom_toBottomOf="@+id/mainQR"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/mainQR"
+            app:srcCompat="@drawable/ic_baseline_refresh_64" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
@@ -160,6 +172,12 @@
         android:layout_alignParentBottom="true"
         android:background="#FFFFFF"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/warningMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center" />
 
         <WebView
             android:id="@+id/webViewFrame"
