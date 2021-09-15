@@ -2,4 +2,5 @@
     <string name="app_name">QRpass</string>
     <string name="setting">설정</string>
     <string name="logout">로그아웃</string>
+    <string name="wearable">웨어러블</string>
 </resources>

@@ -11,6 +11,6 @@
         android:visible="true" />
     <item
         android:id="@+id/wearable_connection"
-        android:title="웨어러블"
+        android:title="@string/wearable"
         app:actionLayout="@layout/switch_item" />
 </menu>

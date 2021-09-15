@@ -134,11 +134,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
 
                 }
-                val delicious = cookie.getCookie(naQRBase)
-                if (delicious == null && nidNL)
+                val naCookie = cookie.getCookie(naQRBase)
+                if (naCookie == null && nidNL)
                     loadUrl("https://nid.naver.com/nidlogin.login?url=${naQRBase}")
                 else
-                    if (delicious == null) {
+                    if (naCookie == null) {
                         cookie.setCookie(
                             naQRBase,
                             "NID_PQR=${pqr};NID_AUT=${aut};NID_SES=${ses};"
