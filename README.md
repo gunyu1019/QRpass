@@ -1,11 +1,16 @@
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/16767890/130763578-5e0e3d08-8c09-4619-9a93-8cf71bd63fc2.png" width="50%" alt="Check-In"/>
+
+    <img src="https://user-images.githubusercontent.com/16767890/133479487-82cbf12e-8853-4c42-9698-a9101d86220b.png" width="50%" alt="Check-In"/>
 </p>
-<h1 align="center">QR Check-In</h1>
+<h1 align="center">QRpass</h1>
 <p align="center">
-  <b>네이버 QR체크인을 보다 쉽게!</b>
+  <b>한층 더 편리해진 자동출입명부</b>
 </p>
 
 ### Introduce
-QR체크인으로 바로 연결되는 어플 입니다. 
-Wear OS를 지원하며, 웨어러블에서도 QR체크인을 편리하게 이용하실 수 있습니다.
+네이버를 기반으로 자동출입명부 (QR체크인)을 자동으로 생성합니다.<br/>
+전자출입명부에 특화된 앱으로 보다 편리하게 사용하실 수 있습니다.
+* **`위젯`을 지원합니다.**<br/>
+  위젯을 통하여 어플을 굳이 키지 않고 바로 불러와 보세요!
+* **`웨어러블(Wear OS)`을 지원합니다.**<br/>
+  휴대폰이 없어도, 인터넷이 되는 웨어러블이라면 자동출입명부를 웨어러블로 보다 쉽게 하실 수 있습니다.
