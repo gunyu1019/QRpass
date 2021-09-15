@@ -14,4 +14,5 @@
     <string name="first_process">네이버 계정으로 로그인해주시기 바랍니다.</string>
     <string name="login_expired">로그인이 만료되었습니다. 로그인해주시기 바랍니다.</string>
     <string name="need_authorize">휴대폰 인증이 필요합니다.</string>
+    <string name="info">정보</string>
 </resources>

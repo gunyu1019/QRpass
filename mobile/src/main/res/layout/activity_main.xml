@@ -15,7 +15,11 @@
             android:id="@+id/bottomNavigationView"
             android:layout_width="0dp"
             android:layout_height="100dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/navigation_background"
+            app:itemIconTint="@color/black"
             app:itemTextColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -59,6 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
+                android:paddingStart="0dp"
                 android:paddingEnd="10dp"
                 android:text="@string/private_code_description"
                 android:textColor="#fafafa"
@@ -69,7 +74,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="0dp"
 
                 android:text="@string/private_code_example"
                 android:textAllCaps="false"
@@ -97,6 +103,8 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_weight="0"
+                android:paddingStart="0dp"
+                android:paddingEnd="10dp"
                 app:srcCompat="@drawable/ic_baseline_access_timer" />
 
             <TextView
@@ -104,6 +112,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
+                android:paddingStart="10dp"
+                android:paddingEnd="0dp"
                 android:text="@string/count_example"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -154,8 +164,8 @@
 
         <ImageView
             android:id="@+id/refreshBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:background="@drawable/radius"
             app:layout_constraintBottom_toBottomOf="@+id/mainQR"
             app:layout_constraintEnd_toEndOf="parent"
@@ -171,7 +181,8 @@
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:background="#FFFFFF"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/warningMessage"

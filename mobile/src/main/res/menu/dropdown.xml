@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/log_inout"
+        android:icon="@drawable/ic_baseline_login_64"
         android:title="@string/logout"
         android:visible="true" />
     <item
         android:id="@+id/information"
-        android:title="정보"
+        android:icon="@drawable/ic_baseline_info_64"
+        android:title="@string/info"
         android:visible="true" />
 </menu>

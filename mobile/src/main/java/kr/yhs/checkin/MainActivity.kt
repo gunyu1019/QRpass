@@ -209,6 +209,7 @@ class MainActivity : AppCompatActivity() {
             if (login) {
                 processLogin()
             } else {
+                inputKey()
                 processMain()
             }
         }
