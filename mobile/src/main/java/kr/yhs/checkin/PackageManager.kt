@@ -6,7 +6,6 @@ import androidx.core.content.edit
 
 
 class PackageManager(private val preferencesName: String, private val context: Context) {
-
     private fun getPreferences(): SharedPreferences {
         return context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
     }
@@ -66,7 +65,7 @@ class PackageManager(private val preferencesName: String, private val context: C
         }
     }
 
-    fun clear(context: Context) {
+    fun clear() {
         val prefs = getPreferences()
         prefs.apply {
             edit {

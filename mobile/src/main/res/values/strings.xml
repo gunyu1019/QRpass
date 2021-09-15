@@ -15,4 +15,11 @@
     <string name="login_expired">로그인이 만료되었습니다. 로그인해주시기 바랍니다.</string>
     <string name="need_authorize">휴대폰 인증이 필요합니다.</string>
     <string name="info">정보</string>
+    <string name="developer">개발자</string>
+    <string name="developer_name">gunyu1019</string>
+    <string name="source_code">소스코드</string>
+    <string name="website">웹사이트</string>
+    <string name="logout_success">네, 하겠습니다.</string>
+    <string name="logout_cancel">아뇨, 하지않을래요</string>
+    <string name="logout_description">어라? 정말로 로그아웃 하실껀가요?</string>
 </resources>

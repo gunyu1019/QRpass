@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/box_inset_layout_padding"
+    android:background="@color/white"
     tools:context=".MainActivity"
     tools:deviceIds="wear">
 
@@ -21,6 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:text="@string/description_privacy_key"
+            android:textColor="#404040"
             android:textAlignment="center"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -34,6 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             android:text="@string/count"
+            android:textColor="#404040"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
