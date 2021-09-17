@@ -167,6 +167,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:background="@drawable/radius"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/mainQR"
             app:layout_constraintEnd_toEndOf="@+id/mainQR"
             app:layout_constraintStart_toStartOf="@+id/mainQR"
@@ -259,6 +260,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/linearLayout6"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -271,19 +273,43 @@
 
                 <Button
                     android:id="@+id/soruceCodeButton"
+                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/source_code"
-                    style="?android:attr/buttonBarButtonStyle" />
+                    android:textColor="@color/light_blue_900" />
 
                 <Button
                     android:id="@+id/websiteButton"
+                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/website"
-                    style="?android:attr/buttonBarButtonStyle" />
+                    android:textColor="@color/light_blue_900" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
+
+                <Button
+                    android:id="@+id/forumButton"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/support_discord"
+                    android:textColor="@color/light_blue_900" />
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -336,23 +362,23 @@
 
                 <Button
                     android:id="@+id/logoutSuccessBtn"
+                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:padding="10dp"
                     android:text="@string/logout_success"
-                    android:textColor="#00aa00"
-                    style="?android:attr/buttonBarButtonStyle" />
+                    android:textColor="#00aa00" />
 
                 <Button
                     android:id="@+id/logoutCancelBtn"
+                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:padding="10dp"
                     android:text="@string/logout_cancel"
-                    android:textColor="#de0000"
-                    style="?android:attr/buttonBarButtonStyle" />
+                    android:textColor="#de0000" />
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

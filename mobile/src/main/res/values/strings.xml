@@ -22,4 +22,5 @@
     <string name="logout_success">네, 하겠습니다.</string>
     <string name="logout_cancel">아뇨, 하지않을래요</string>
     <string name="logout_description">어라? 정말로 로그아웃 하실껀가요?</string>
+    <string name="support_discord">고객센터(디스코드)</string>
 </resources>

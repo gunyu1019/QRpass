@@ -214,6 +214,10 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://yhs.kr"))
             startActivity(intent)
         }
+        binding.forumButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://yhs.kr/YBOT/forum.html"))
+            startActivity(intent)
+        }
 
         if (typeMode == "na") {
             val pqr = pm.getString("NID_PQR")
