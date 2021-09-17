@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Base64
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.TranslateAnimation
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
     private var mBinding: ActivityMainBinding? = null
     private val binding get() = mBinding!!
     private lateinit var pm: PackageManager
-    private lateinit var wa: WearableActivity
+    private var wearClient = WearableActivity()
 
     private var login: Boolean = false
     private var infoSlide: Boolean = false
@@ -131,7 +132,14 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                             login = false
                             slideDown(binding.webViewLayout)
                             loadUrl("https://m.naver.com")
-                            wa.inputKey()
+                            wearClient.putData(
+                                wearClient.NAVER_TOKEN,
+                                mapOf(
+                                    "kr.yhs.checkin.token.NID_PQR" to (data["NID_PQR"]?: ""),
+                                    "kr.yhs.checkin.token.NID_AUT" to (data["NID_AUT"]?: ""),
+                                    "kr.yhs.checkin.token.NID_SES" to (data["NID_SES"]?: "")
+                                )
+                            )
                             processMain()
                         }
                         url ?: "".indexOf("https://nid.naver.com/nidlogin.login") == 0 -> {
@@ -165,7 +173,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         pm = PackageManager("checkIn", this@MainActivity)
-        wa = WearableActivity(this@MainActivity)
+        wearClient.loadClient(this@MainActivity)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -229,7 +237,14 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
             if (login) {
                 processLogin()
             } else {
-                wa.inputKey()
+                wearClient.putData(
+                    wearClient.NAVER_TOKEN,
+                    mapOf(
+                        "kr.yhs.checkin.token.NID_PQR" to (pqr?: ""),
+                        "kr.yhs.checkin.token.NID_AUT" to (aut?: ""),
+                        "kr.yhs.checkin.token.NID_SES" to (ses?: "")
+                    )
+                )
                 processMain()
             }
         }
@@ -282,7 +297,20 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                 }
             }
             R.id.refresh_wearable -> {
-                wa.inputKey()
+                val pqr = pm.getString("NID_PQR")
+                val aut = pm.getString("NID_AUT")
+                val ses = pm.getString("NID_SES")
+                wearClient.putData(
+                    wearClient.NAVER_TOKEN,
+                    mapOf(
+                        "kr.yhs.checkin.token.NID_PQR" to (pqr?: ""),
+                        "kr.yhs.checkin.token.NID_AUT" to (aut?: ""),
+                        "kr.yhs.checkin.token.NID_SES" to (ses?: "")
+                    ),
+                    successListener = {
+                        Log.i("WearableClient[Listener]", "Success send data to Wearable")
+                    }
+                )
             }
         }
         return false

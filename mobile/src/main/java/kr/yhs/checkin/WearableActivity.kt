@@ -3,59 +3,57 @@ package kr.yhs.checkin
 import android.app.Activity
 import android.os.Looper
 import android.util.Log
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.PutDataRequest
 import com.google.android.gms.wearable.Wearable
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
-
-import com.google.android.gms.wearable.DataItem
-import java.util.concurrent.ExecutionException
 
 
-class WearableActivity(context: Activity) {
-    private var pm = PackageManager("checkIn", context)
-    private var dataClient = Wearable.WearableOptions.Builder().setLooper(Looper.getMainLooper()).build().let { options ->
-        Wearable.getDataClient(context, options)
+class WearableActivity {
+    private lateinit var pm: PackageManager
+    private lateinit var dataClient: DataClient
+
+    val NAVER_TOKEN = "/naver/token"
+
+    fun loadClient(context: Activity) {
+        pm = PackageManager("checkIn", context)
+        dataClient = Wearable.WearableOptions.Builder().setLooper(
+            Looper.getMainLooper()
+        ).build().let { options ->
+            Wearable.getDataClient(context, options)
+        }
     }
 
-    fun inputKey(type: String? = null) {
-        if (type?:(pm.getString("checkMode")?:"") == "na") {
-            Log.i("Wearable-inputData", "$type")
-            val pqr = pm.getString("NID_PQR")
-            val aut = pm.getString("NID_AUT")
-            val ses = pm.getString("NID_SES")
-
-            val putDataMapRequest = PutDataMapRequest.create("/naKey")
-            val dataMap = putDataMapRequest.dataMap
-            dataMap.putString("kr.yhs.checkin.NID_PQR", pqr ?: "")
-            dataMap.putString("kr.yhs.checkin.NID_AUT", aut ?: "")
-            dataMap.putString("kr.yhs.checkin.NID_SES", ses ?: "")
-            val request: PutDataRequest = putDataMapRequest.asPutDataRequest()
-            request.setUrgent()
-            dataClient.putDataItem(request).apply {
-                addOnSuccessListener {
-                    Log.i("Wearable-inputData", "Message sent: $it")
-                }
-                addOnFailureListener {
-                    Log.i("Wearable-inputData", "Message NOT sent, error: $it")
+    fun putData(
+        key: String,
+        data: Map<String, Any>,
+        successListener: OnSuccessListener<Any>? = null,
+        failureListener: OnFailureListener? = null
+    ) {
+        Log.i("WearableClient [key]", key)
+        Log.i("WearableClient [value]", data.toString())
+        val putDataReq: PutDataRequest = PutDataMapRequest.create(key).run {
+            data.forEach { (key, value) ->
+                when (value) {
+                    is String -> dataMap.putString(key, value)
+                    is Int -> dataMap.putInt(key, value)
+                    is Boolean -> dataMap.putBoolean(key, value)
+                    is Byte -> dataMap.putByte(key, value)
+                    is Double -> dataMap.putDouble(key, value)
+                    is Float -> dataMap.putFloat(key, value)
                 }
             }
-            /* val putDataReq: PutDataRequest = PutDataMapRequest.create("/naKey").run {
-                dataMap.putString("kr.yhs.checkin.NID_PQR", pqr ?: "")
-                dataMap.putString("kr.yhs.checkin.NID_AUT", aut ?: "")
-                dataMap.putString("kr.yhs.checkin.NID_SES", ses ?: "")
-                asPutDataRequest()
-            }
-            dataClient.putDataItem(putDataReq).apply {
-                addOnSuccessListener {
-                    Log.i("Wearable-inputData", "Message sent: ${it}")
-                }
-                addOnFailureListener {
-                    Log.i("Wearable-inputData", "Message NOT sent, error: $it")
-                }
-            } */
+            asPutDataRequest()
         }
-        return
+        dataClient.putDataItem(putDataReq).apply {
+            if (successListener != null) {
+                addOnSuccessListener(successListener)
+            }
+            if (failureListener != null) {
+                addOnFailureListener(failureListener)
+            }
+        }
     }
 }

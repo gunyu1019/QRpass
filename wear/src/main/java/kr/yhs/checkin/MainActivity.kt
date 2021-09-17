@@ -26,77 +26,87 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
         binding.imageView.setImageBitmap(bitmap)
     }
 
-    private fun webMain() {
+    private fun webMain(map: Map<String, String>? = null) {
         if (typeMode == "na") {
-            val pqr = pm.getString("NID_PQR")
-            val aut = pm.getString("NID_AUT")
-            val ses = pm.getString("NID_SES")
-            Thread (
-                Runnable {
-                    val response = Jsoup.connect("https://nid.naver.com/login/privacyQR")
-                        .header("Cookie", "NID_PQR=${pqr};NID_AUT=${aut};NID_SES=${ses};")
-                        .get()
-                    val html = response.body()
-                    if (html.select("div.qr_wrap").html() != "") {
-                        val wrap = html.select("div.qr_wrap")
-                        if (wrap.select("div.qr_area").html() != "") {
-                            val area = wrap.select("div.qr_area")
-                            val base64 = area.select("div.qr_box img").attr("src")
-                            val numberHTML = area.select("div.number_box span.number")
-                            privacyNumber = numberHTML.text()
-
-                            this@MainActivity.runOnUiThread(java.lang.Runnable {
-                                binding.main.visibility = View.VISIBLE
-                                binding.progressLayout.visibility = View.GONE
-                                binding.warningLayout.visibility = View.GONE
-                                binding.refreshBtn.visibility = View.GONE
-
-                                loadImage(base64.toString())
-                                binding.privateNumberText.text = privacyNumber
-                                binding.count.text = getString(R.string.count, 15)
-
-                                var second = 0
-                                timer(period = 1000, initialDelay = 1000) {
-                                    runOnUiThread {
-                                        binding.count.text = getString(R.string.count, 15 - second)
-                                    }
-                                    second++
-                                    if (second == 15) {
-                                        runOnUiThread {
-                                            binding.refreshBtn.visibility = View.VISIBLE
-                                        }
-                                        cancel()
-                                    }
-                                }
-                                return@Runnable
-                            })
-                        } else if (wrap.select(".self_box").html() != "") {
-                            this@MainActivity.runOnUiThread(java.lang.Runnable {
-                                binding.main.visibility = View.GONE
-                                binding.progressLayout.visibility = View.GONE
-                                binding.warningLayout.visibility = View.VISIBLE
-                                binding.refreshBtn.visibility = View.GONE
-
-                                binding.warningMessage.text = getString(R.string.need_authorize)
-                                return@Runnable
-                            })
-                        }
-                    } else if (html.select(".login_wrap").html() != "") {
-                        this@MainActivity.runOnUiThread(java.lang.Runnable {
-                            binding.main.visibility = View.GONE
-                            binding.progressLayout.visibility = View.GONE
-                            binding.warningLayout.visibility = View.VISIBLE
-                            binding.refreshBtn.visibility = View.GONE
-
-                            binding.warningMessage.text = getString(R.string.need_login)
-                            return@Runnable
-                        })
-                    } else {
-                        Log.w("Loding-Error", "${html.html()}")
-                    }
+            Thread {
+                val pqr: String
+                val aut: String
+                val ses: String
+                if (map == null) {
+                    pqr = pm.getString("NID_PQR") ?: ""
+                    aut = pm.getString("NID_AUT") ?: ""
+                    ses = pm.getString("NID_SES") ?: ""
+                } else {
+                    pqr = map["NID_PQR"] ?: ""
+                    aut = map["NID_AUT"] ?: ""
+                    ses = map["NID_SES"] ?: ""
                 }
-            ).start()
+                val response = Jsoup.connect("https://nid.naver.com/login/privacyQR")
+                    .header("Cookie", "NID_PQR=${pqr};NID_AUT=${aut};NID_SES=${ses};")
+                    .get()
+                val html = response.body()
+                if (html.select("div.qr_wrap").html() != "") {
+                    val wrap = html.select("div.qr_wrap")
+                    if (wrap.select("div.qr_area").html() != "") {
+                        val area = wrap.select("div.qr_area")
+                        val base64 = area.select("div.qr_box img").attr("src")
+                        val numberHTML = area.select("div.number_box span.number")
+                        privacyNumber = numberHTML.text()
+                        this@MainActivity.runOnUiThread {
+                            mainProcess(base64, privacyNumber)
+                            return@runOnUiThread
+                        }
+                    } else if (wrap.select(".self_box").html() != "") {
+                        this@MainActivity.runOnUiThread {
+                            warningMessage(getString(R.string.need_authorize))
+                            return@runOnUiThread
+                        }
+                    } else {
+                        Log.w("Loding-Failed", html.html())
+                    }
+                } else if (html.select(".login_wrap").html() != "") {
+                    this@MainActivity.runOnUiThread {
+                        warningMessage(getString(R.string.need_login))
+                        return@runOnUiThread
+                    }
+                } else {
+                    Log.w("Loding-Failed", html.html())
+                }
+                return@Thread
+            }.start()
         }
+    }
+
+    private fun mainProcess(image: String, privateNumber: String) {
+        binding.main.visibility = View.VISIBLE
+        binding.progressLayout.visibility = View.GONE
+        binding.warningLayout.visibility = View.GONE
+        binding.refreshBtn.visibility = View.GONE
+
+        loadImage(image)
+        binding.privateNumberText.text = privacyNumber
+        binding.count.text = getString(R.string.count, 15)
+        var second = 0
+        timer(period = 1000, initialDelay = 1000) {
+            runOnUiThread {
+                binding.count.text = getString(R.string.count, 15 - second)
+            }
+            second++
+            if (second == 15) {
+                runOnUiThread {
+                    binding.refreshBtn.visibility = View.VISIBLE
+                }
+                cancel()
+            }
+        }
+    }
+
+    private fun warningMessage(comment: String) {
+        binding.main.visibility = View.GONE
+        binding.progressLayout.visibility = View.GONE
+        binding.warningLayout.visibility = View.VISIBLE
+        binding.refreshBtn.visibility = View.GONE
+        binding.warningMessage.text = comment
     }
 
     override fun onResume() {
@@ -137,7 +147,6 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
             binding.main.visibility = View.GONE
             binding.progressLayout.visibility = View.GONE
             binding.warningLayout.visibility = View.VISIBLE
-
             binding.warningMessage.text = getString(R.string.phone)
         } else {
             binding.main.visibility = View.GONE
@@ -147,7 +156,13 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
 
         if (typeMode == "na") {
             Log.d("cookie", "NID_PQR=${pqr};NID_AUT=${aut};NID_SES=${ses};")
-            webMain()
+            webMain(
+                mapOf(
+                    "NID_PQR" to (pqr ?: ""),
+                    "NID_AUT" to (aut ?: ""),
+                    "NID_SES" to (ses ?: "")
+                )
+            )
         }
     }
 
@@ -157,20 +172,36 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
             if (event.type == DataEvent.TYPE_CHANGED) {
                 event.dataItem.also { item ->
                     Log.i("Wearable-inputData", "item-url ${item.uri.path}")
-                    if (item.uri.path == "/naKey") {
+                    if (item.uri.path == "/naver/token") {
                         DataMapItem.fromDataItem(item).dataMap.apply {
-                            val pqr = getString("kr.yhs.checkin.na.NID_PQR")
-                            val aut = getString("kr.yhs.checkin.na.NID_AUT")
-                            val ses = getString("kr.yhs.checkin.na.NID_SES")
+                            val pqr = getString("kr.yhs.checkin.token.NID_PQR") ?: ""
+                            val aut = getString("kr.yhs.checkin.token.NID_AUT") ?: ""
+                            val ses = getString("kr.yhs.checkin.token.NID_SES") ?: ""
                             pm.setString("checkMode", "na")
-                            pm.setString("NID_PQR", pqr?:"")
-                            pm.setString("NID_AUT", aut?:"")
-                            pm.setString("NID_SES", ses?:"")
+                            pm.setString("NID_PQR", pqr)
+                            pm.setString("NID_AUT", aut)
+                            pm.setString("NID_SES", ses)
+
+                            binding.main.visibility = View.GONE
+                            binding.progressLayout.visibility = View.VISIBLE
+                            binding.warningLayout.visibility = View.GONE
+                            webMain(
+                                mapOf(
+                                    "NID_PQR" to pqr,
+                                    "NID_AUT" to aut,
+                                    "NID_SES" to ses
+                                )
+                            )
                         }
-                        binding.main.visibility = View.GONE
-                        binding.progressLayout.visibility = View.VISIBLE
-                        binding.warningLayout.visibility = View.GONE
-                        webMain()
+                    }
+                }
+            } else if (event.type == DataEvent.TYPE_DELETED) {
+                event.dataItem.also { item ->
+                    Log.i("Wearable-inputData", "item-url ${item.uri.path}")
+                    if (item.uri.path == "/naver/token") {
+                        pm.removeKey("NID_PQR")
+                        pm.removeKey("NID_AUT")
+                        pm.removeKey("NID_SES")
                     }
                 }
             }
