@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
             val pqr = pm.getString("NID_PQR")
             val aut = pm.getString("NID_AUT")
             val ses = pm.getString("NID_SES")
+
             Thread {
                 val response = Jsoup.connect(naverLink)
                     .header("Cookie", "NID_PQR=${pqr};NID_AUT=${aut};NID_SES=${ses};")
