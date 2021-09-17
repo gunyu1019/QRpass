@@ -6,6 +6,10 @@
         android:title="@string/logout"
         android:visible="true" />
     <item
+        android:id="@+id/refresh_wearable"
+        android:icon="@drawable/ic_baseline_refresh_64"
+        android:title="@string/refresh_wearable" />
+    <item
         android:id="@+id/information"
         android:icon="@drawable/ic_baseline_info_64"
         android:title="@string/info"

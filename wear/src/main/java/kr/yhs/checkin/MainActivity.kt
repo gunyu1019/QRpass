@@ -91,6 +91,8 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
                             binding.warningMessage.text = getString(R.string.need_login)
                             return@Runnable
                         })
+                    } else {
+                        Log.w("Loding-Error", "${html.html()}")
                     }
                 }
             ).start()
@@ -151,10 +153,10 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
 
     override fun onDataChanged(data: DataEventBuffer) {
         data.forEach{ event ->
-            Log.d("Wearable-inputData", "data-received ${event.type}")
+            Log.i("Wearable-inputData", "data-received ${event.type}")
             if (event.type == DataEvent.TYPE_CHANGED) {
                 event.dataItem.also { item ->
-                    Log.d("Wearable-inputData", "item-url ${item.uri.path}")
+                    Log.i("Wearable-inputData", "item-url ${item.uri.path}")
                     if (item.uri.path == "/naKey") {
                         DataMapItem.fromDataItem(item).dataMap.apply {
                             val pqr = getString("kr.yhs.checkin.na.NID_PQR")
@@ -164,12 +166,11 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
                             pm.setString("NID_PQR", pqr?:"")
                             pm.setString("NID_AUT", aut?:"")
                             pm.setString("NID_SES", ses?:"")
-
-                            binding.main.visibility = View.GONE
-                            binding.progressLayout.visibility = View.VISIBLE
-                            binding.warningLayout.visibility = View.GONE
-                            webMain()
                         }
+                        binding.main.visibility = View.GONE
+                        binding.progressLayout.visibility = View.VISIBLE
+                        binding.warningLayout.visibility = View.GONE
+                        webMain()
                     }
                 }
             }

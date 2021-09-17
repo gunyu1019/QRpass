@@ -129,9 +129,9 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                             pm.setString("NID_AUT", data["NID_AUT"] ?: "")
                             pm.setString("NID_SES", data["NID_SES"] ?: "")
                             login = false
-                            wa.inputKey()
                             slideDown(binding.webViewLayout)
-                            destroy()
+                            loadUrl("https://m.naver.com")
+                            wa.inputKey()
                             processMain()
                         }
                         url ?: "".indexOf("https://nid.naver.com/nidlogin.login") == 0 -> {
@@ -280,6 +280,9 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                     slideUp(binding.infoLayout)
                     true
                 }
+            }
+            R.id.refresh_wearable -> {
+                wa.inputKey()
             }
         }
         return false
