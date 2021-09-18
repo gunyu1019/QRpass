@@ -53,7 +53,7 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
                         val numberHTML = area.select("div.number_box span.number")
                         privacyNumber = numberHTML.text()
                         this@MainActivity.runOnUiThread {
-                            mainProcess(base64, privacyNumber)
+                            mainProcess(base64)
                             return@runOnUiThread
                         }
                     } else if (wrap.select(".self_box").html() != "") {
@@ -77,7 +77,7 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
         }
     }
 
-    private fun mainProcess(image: String, privateNumber: String) {
+    private fun mainProcess(image: String) {
         binding.main.visibility = View.VISIBLE
         binding.progressLayout.visibility = View.GONE
         binding.warningLayout.visibility = View.GONE

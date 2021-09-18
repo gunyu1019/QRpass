@@ -36,6 +36,7 @@ class WearableActivity {
         Log.i("WearableClient [value]", data.toString())
         val putDataReq: PutDataRequest = PutDataMapRequest.create(key).run {
             data.forEach { (key, value) ->
+                Log.d("WearableClient [data-forEach]", "$key: $value")
                 when (value) {
                     is String -> dataMap.putString(key, value)
                     is Int -> dataMap.putInt(key, value)

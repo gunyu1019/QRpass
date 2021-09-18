@@ -62,26 +62,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                         privacyNumber = numberHTML.text()
 
                         this@MainActivity.runOnUiThread {
-                            loadImage(base64.toString())
-                            binding.privateCode.text = privacyNumber
-                            binding.refreshBtn.visibility = View.GONE
-                            binding.timerCount.text = getString(R.string.count, 15)
-
-                            var second = 0
-                            timer(period = 1000, initialDelay = 1000) {
-                                this@MainActivity.runOnUiThread {
-                                    binding.timerCount.text = getString(R.string.count, 15 - second)
-                                }
-                                second++
-                                if (second == 15) {
-                                    this@MainActivity.runOnUiThread {
-                                        binding.refreshBtn.visibility = View.VISIBLE
-                                    }
-                                    cancel()
-                                } else if (login) {
-                                    cancel()
-                                }
-                            }
+                            mainProcess(base64)
                         }
                     } else if (wrap.select(".self_box").html() != "") {
                         this@MainActivity.runOnUiThread {
@@ -96,6 +77,31 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                     }
                 }
             }.start()
+        }
+    }
+
+    private fun mainProcess(image: String) {
+        binding.refreshBtn.visibility = View.GONE
+
+        loadImage(image)
+        binding.privateCode.text = privacyNumber
+        binding.timerCount.text = getString(R.string.count, 15)
+
+        var second = 0
+        timer(period = 1000, initialDelay = 1000) {
+            this@MainActivity.runOnUiThread {
+                binding.timerCount.text = getString(R.string.count, 15 - second)
+            }
+            second++
+            if (second == 15) {
+                this@MainActivity.runOnUiThread {
+                    binding.timerCount.text = getString(R.string.count, 0)
+                    binding.refreshBtn.visibility = View.VISIBLE
+                }
+                cancel()
+            } else if (login) {
+                cancel()
+            }
         }
     }
 
@@ -303,9 +309,9 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                 wearClient.putData(
                     wearClient.NAVER_TOKEN,
                     mapOf(
-                        "kr.yhs.checkin.token.NID_PQR" to (pqr?: ""),
-                        "kr.yhs.checkin.token.NID_AUT" to (aut?: ""),
-                        "kr.yhs.checkin.token.NID_SES" to (ses?: "")
+                        "kr.yhs.checkin.token.NID_PQR" to (pqr ?: ""),
+                        "kr.yhs.checkin.token.NID_AUT" to (aut ?: ""),
+                        "kr.yhs.checkin.token.NID_SES" to (ses ?: "")
                     ),
                     successListener = {
                         Log.i("WearableClient[Listener]", "Success send data to Wearable")

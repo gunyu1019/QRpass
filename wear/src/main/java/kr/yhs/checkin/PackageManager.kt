@@ -66,7 +66,7 @@ class PackageManager(private val preferencesName: String, private val context: C
         }
     }
 
-    fun clear(context: Context) {
+    fun clear() {
         val prefs = getPreferences()
         prefs.apply {
             edit {
