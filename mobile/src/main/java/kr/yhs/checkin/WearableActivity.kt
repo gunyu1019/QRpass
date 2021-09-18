@@ -46,7 +46,7 @@ class WearableActivity {
                     is Float -> dataMap.putFloat(key, value)
                 }
             }
-            asPutDataRequest()
+            asPutDataRequest().setUrgent()
         }
         dataClient.putDataItem(putDataReq).apply {
             if (successListener != null) {

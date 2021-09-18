@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
     private var login: Boolean = false
     private var infoSlide: Boolean = false
     private var logoutSlide: Boolean = false
+    private var sendingToWearable: Boolean = false
     private lateinit var typeMode: String
 
     private lateinit var privacyNumber: String
@@ -47,8 +48,19 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
             val pqr = pm.getString("NID_PQR")
             val aut = pm.getString("NID_AUT")
             val ses = pm.getString("NID_SES")
-
             Thread {
+                if (!sendingToWearable) {
+                    wearClient.putData(
+                        wearClient.NAVER_TOKEN,
+                        mapOf(
+                            "kr.yhs.checkin.token.NID_PQR" to (pqr ?: ""),
+                            "kr.yhs.checkin.token.NID_AUT" to (aut ?: ""),
+                            "kr.yhs.checkin.token.NID_SES" to (ses ?: "")
+                        )
+                    )
+                    sendingToWearable = true
+                }
+
                 val response = Jsoup.connect(naverLink)
                     .header("Cookie", "NID_PQR=${pqr};NID_AUT=${aut};NID_SES=${ses};")
                     .get()
@@ -243,14 +255,6 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
             if (login) {
                 processLogin()
             } else {
-                wearClient.putData(
-                    wearClient.NAVER_TOKEN,
-                    mapOf(
-                        "kr.yhs.checkin.token.NID_PQR" to (pqr?: ""),
-                        "kr.yhs.checkin.token.NID_AUT" to (aut?: ""),
-                        "kr.yhs.checkin.token.NID_SES" to (ses?: "")
-                    )
-                )
                 processMain()
             }
         }
@@ -279,7 +283,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         animate.duration = 500
         animate.fillAfter = true
         view.startAnimation(animate)
-        view.visibility = View.INVISIBLE
+        view.visibility = View.GONE
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

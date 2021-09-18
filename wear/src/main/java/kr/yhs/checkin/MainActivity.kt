@@ -28,19 +28,19 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
 
     private fun webMain(map: Map<String, String>? = null) {
         if (typeMode == "na") {
+            val pqr: String
+            val aut: String
+            val ses: String
+            if (map == null) {
+                pqr = pm.getString("NID_PQR") ?: ""
+                aut = pm.getString("NID_AUT") ?: ""
+                ses = pm.getString("NID_SES") ?: ""
+            } else {
+                pqr = map["NID_PQR"] ?: ""
+                aut = map["NID_AUT"] ?: ""
+                ses = map["NID_SES"] ?: ""
+            }
             Thread {
-                val pqr: String
-                val aut: String
-                val ses: String
-                if (map == null) {
-                    pqr = pm.getString("NID_PQR") ?: ""
-                    aut = pm.getString("NID_AUT") ?: ""
-                    ses = pm.getString("NID_SES") ?: ""
-                } else {
-                    pqr = map["NID_PQR"] ?: ""
-                    aut = map["NID_AUT"] ?: ""
-                    ses = map["NID_SES"] ?: ""
-                }
                 val response = Jsoup.connect("https://nid.naver.com/login/privacyQR")
                     .header("Cookie", "NID_PQR=${pqr};NID_AUT=${aut};NID_SES=${ses};")
                     .get()
@@ -62,7 +62,7 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
                             return@runOnUiThread
                         }
                     } else {
-                        Log.w("Loding-Failed", html.html())
+                        Log.w("Loading-Failed", html.html())
                     }
                 } else if (html.select(".login_wrap").html() != "") {
                     this@MainActivity.runOnUiThread {
@@ -70,7 +70,7 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
                         return@runOnUiThread
                     }
                 } else {
-                    Log.w("Loding-Failed", html.html())
+                    Log.w("Loading-Failed", html.html())
                 }
                 return@Thread
             }.start()
@@ -148,6 +148,7 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
             binding.progressLayout.visibility = View.GONE
             binding.warningLayout.visibility = View.VISIBLE
             binding.warningMessage.text = getString(R.string.phone)
+            return
         } else {
             binding.main.visibility = View.GONE
             binding.progressLayout.visibility = View.VISIBLE
@@ -177,14 +178,14 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
                             val pqr = getString("kr.yhs.checkin.token.NID_PQR") ?: ""
                             val aut = getString("kr.yhs.checkin.token.NID_AUT") ?: ""
                             val ses = getString("kr.yhs.checkin.token.NID_SES") ?: ""
-                            pm.setString("checkMode", "na")
+
+                            typeMode = "na"
+                            pm.setString("checkMode", typeMode)
                             pm.setString("NID_PQR", pqr)
                             pm.setString("NID_AUT", aut)
                             pm.setString("NID_SES", ses)
 
-                            binding.main.visibility = View.GONE
-                            binding.progressLayout.visibility = View.VISIBLE
-                            binding.warningLayout.visibility = View.GONE
+                            Log.d("cookie", "NID_PQR=${pqr};NID_AUT=${aut};NID_SES=${ses};")
                             webMain(
                                 mapOf(
                                     "NID_PQR" to pqr,
@@ -192,6 +193,9 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
                                     "NID_SES" to ses
                                 )
                             )
+                            binding.main.visibility = View.GONE
+                            binding.progressLayout.visibility = View.VISIBLE
+                            binding.warningLayout.visibility = View.GONE
                         }
                     }
                 }
