@@ -94,6 +94,7 @@ class MainActivity : Activity(), DataClient.OnDataChangedListener {
             second++
             if (second == 15) {
                 runOnUiThread {
+                    binding.count.text = getString(R.string.count, 0)
                     binding.refreshBtn.visibility = View.VISIBLE
                 }
                 cancel()

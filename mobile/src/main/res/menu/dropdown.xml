@@ -8,7 +8,8 @@
     <item
         android:id="@+id/refresh_wearable"
         android:icon="@drawable/ic_baseline_refresh_64"
-        android:title="@string/refresh_wearable" />
+        android:title="@string/refresh_wearable"
+        android:visible="false"/>
     <item
         android:id="@+id/information"
         android:icon="@drawable/ic_baseline_info_64"
