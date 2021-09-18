@@ -10,7 +10,7 @@ android {
         applicationId "kr.yhs.checkin"
         minSdk 26
         targetSdk 30
-        versionCode 1
+        versionCode 201
         versionName "1.0"
 
     }
