@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/ic_baseline_access_timer.xml" value="0.40260416666666665" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/ic_baseline_info_64.xml" value="0.40260416666666665" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/ic_baseline_login_64.xml" value="0.40260416666666665" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/ic_baseline_refresh_64.xml" value="0.40260416666666665" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/ic_baseline_settings_64.xml" value="0.40260416666666665" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.40260416666666665" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/info_background.xml" value="0.40260416666666665" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/navigation_bottom_background.xml" value="0.40260416666666665" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/private_code_layout_background.xml" value="0.234375" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/radius.xml" value="0.234375" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable/ic_launcher_background.xml" value="0.40260416666666665" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/menu/dropdown.xml" value="0.21822916666666667" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.40260416666666665" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/layout/activity_main.xml" value="1.823076923076923" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
