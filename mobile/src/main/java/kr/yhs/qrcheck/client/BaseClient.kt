@@ -13,9 +13,9 @@ import kr.yhs.qrcheck.MainActivity
 import kotlin.coroutines.CoroutineContext
 
 abstract class BaseClient(open val activity: MainActivity): CoroutineScope {
-    private lateinit var privateKeyResource: TextView
-    private lateinit var qrImageResource: ImageView
-    private lateinit var webViewResource: WebView
+    private var privateKeyResource: TextView? = null
+    private var qrImageResource: ImageView? = null
+    private var webViewResource: WebView? = null
     var responseStatus: Boolean? = null
     lateinit var responseReason: String
 
@@ -25,9 +25,9 @@ abstract class BaseClient(open val activity: MainActivity): CoroutineScope {
     open val baseLink = ""
 
     fun setResource(
-        privateKey: TextView,
-        qrImage: ImageView,
-        webView: WebView
+        privateKey: TextView? = null,
+        qrImage: ImageView? = null,
+        webView: WebView? = null
     ) {
         privateKeyResource = privateKey
         qrImageResource = qrImage
@@ -42,17 +42,20 @@ abstract class BaseClient(open val activity: MainActivity): CoroutineScope {
         val base64Image: String = resource.split(",")[1]
         val decodedString = Base64.decode(base64Image, Base64.DEFAULT)
         val bitmap: Bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-        if (qrImageResponse != resource) {
+        if (qrImageResponse != resource)
             qrImageResponse = resource
-        }
-        qrImageResource.setImageBitmap(bitmap)
+
+        qrImageResource!!.setImageBitmap(bitmap)
     }
 
     fun updateResource() {
-        privateKeyResource.text = privateKeyResponse
-        loadImageWithBase64(
-            qrImageResponse as String
-        )
+        if (privateKeyResource != null)
+            privateKeyResource!!.text = privateKeyResponse
+
+        if (qrImageResource != null)
+            loadImageWithBase64(
+                qrImageResponse as String
+            )
     }
 
     fun failedResource() {

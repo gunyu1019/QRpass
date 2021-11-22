@@ -12,6 +12,11 @@ import android.view.animation.TranslateAnimation
 import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.wear.remote.interactions.RemoteActivityHelper
+import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.Node
+import com.google.android.gms.wearable.NodeClient
+import com.google.android.gms.wearable.Wearable
 import com.google.android.material.navigation.NavigationBarView
 import kr.yhs.checkin.PackageManager
 import kr.yhs.checkin.WearableManager
@@ -26,6 +31,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
     private var wearClient = WearableManager()
 
     private var loginRequired: Boolean = false
+    private var wearClientDetected: Boolean = false
     private var typeClient: Int = 0
 
     private var infoSlideView: Boolean = false
@@ -122,8 +128,8 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
             val aut = pm.getString("NID_AUT")
             val ses = pm.getString("NID_SES")
             client.onLoad(pqr, aut, ses)
-            client.getData()
         }
+        client.getData()
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -264,5 +270,8 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
             }
         }
         return false
+    }
+
+    companion object {
     }
 }
