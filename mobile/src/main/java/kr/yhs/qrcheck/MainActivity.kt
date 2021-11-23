@@ -13,22 +13,28 @@ import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.wear.remote.interactions.RemoteActivityHelper
-import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.Node
-import com.google.android.gms.wearable.NodeClient
-import com.google.android.gms.wearable.Wearable
+import com.google.android.gms.wearable.*
 import com.google.android.material.navigation.NavigationBarView
-import kr.yhs.checkin.PackageManager
-import kr.yhs.checkin.WearableManager
+import kotlinx.coroutines.*
+import kotlinx.coroutines.tasks.await
 import kr.yhs.qrcheck.client.BaseClient
 import kr.yhs.qrcheck.client.NaverClient
 import kr.yhs.qrcheck.databinding.ActivityMainBinding
+import kotlin.coroutines.CoroutineContext
 
-class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener,
+    CapabilityClient.OnCapabilityChangedListener, CoroutineScope {
     private var mBinding: ActivityMainBinding? = null
     private val binding get() = mBinding!!
     private lateinit var pm: PackageManager
     private var wearClient = WearableManager()
+
+    private lateinit var capabilityClient: CapabilityClient
+    private lateinit var nodeClient: NodeClient
+    private lateinit var remoteActivityHelper: RemoteActivityHelper
+
+    private var wearNodesWithApp: Set<Node>? = null
+    private var allConnectedNodes: List<Node>? = null
 
     private var loginRequired: Boolean = false
     private var wearClientDetected: Boolean = false
@@ -45,6 +51,11 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         wearClient.loadClient(this@MainActivity)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        mJob = Job()
+
+        capabilityClient = Wearable.getCapabilityClient(this)
+        nodeClient = Wearable.getNodeClient(this)
+        remoteActivityHelper = RemoteActivityHelper(this)
 
         binding.webViewLayout.visibility = View.INVISIBLE
         binding.infoLayout.visibility = View.INVISIBLE
@@ -107,6 +118,19 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
             startActivity(intent)
         }
 
+        launch {
+            val capabilityInfo = capabilityClient
+                .getCapability(WearableManager.CAPABILITY_WEAR_APP, CapabilityClient.FILTER_ALL)
+                .await()
+            val connectedNodes = nodeClient.connectedNodes.await()
+
+            withContext(Dispatchers.Main) {
+                wearNodesWithApp = capabilityInfo.nodes
+                allConnectedNodes = connectedNodes
+                wearProcess()
+            }
+        }
+
         if (typeClient == 0) {
             val pqr = pm.getString("NID_PQR")?: ""
             val aut = pm.getString("NID_AUT")?: ""
@@ -118,6 +142,33 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                 webViewProcess()
             } else {
                 mainProcess()
+            }
+        }
+    }
+
+    private fun wearProcess() {
+        val wearNodesWithApp = wearNodesWithApp
+        val allConnectedNodes = allConnectedNodes
+
+        when {
+            wearNodesWithApp == null || allConnectedNodes == null -> {
+                Log.d(TAG, "Waiting on Results for both connected nodes and nodes with app")
+            }
+            allConnectedNodes.isEmpty() -> {
+                Log.d(TAG, "No devices")
+                wearClientDetected = false
+            }
+            wearNodesWithApp.isEmpty() -> {
+                Log.d(TAG, "Missing on all devices")
+                wearClientDetected = false
+            }
+            wearNodesWithApp.size < allConnectedNodes.size -> {
+                Log.d(TAG, "Installed on some devices")
+                wearClientDetected = true
+            }
+            else -> {
+                Log.d(TAG, "Installed on all devices")
+                wearClientDetected = true
             }
         }
     }
@@ -165,15 +216,16 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                                 pm.setString("NID_PQR", data["NID_PQR"] ?: "")
                                 pm.setString("NID_AUT", data["NID_AUT"] ?: "")
                                 pm.setString("NID_SES", data["NID_SES"] ?: "")
-
-                                wearClient.putData(
-                                    wearClient.NAVER_TOKEN,
-                                    mapOf(
-                                        "kr.yhs.checkin.token.NID_PQR" to (data["NID_PQR"] ?: ""),
-                                        "kr.yhs.checkin.token.NID_AUT" to (data["NID_AUT"] ?: ""),
-                                        "kr.yhs.checkin.token.NID_SES" to (data["NID_SES"] ?: "")
+                                if (wearClientDetected) {
+                                    wearClient.insertData(
+                                        wearClient.naverToken,
+                                        mapOf(
+                                            "kr.yhs.checkin.token.NID_PQR" to (data["NID_PQR"] ?: ""),
+                                            "kr.yhs.checkin.token.NID_AUT" to (data["NID_AUT"] ?: ""),
+                                            "kr.yhs.checkin.token.NID_SES" to (data["NID_SES"] ?: "")
+                                        )
                                     )
-                                )
+                                }
                                 loadUrl("https://m.naver.com")
                             }
                             slideDown(binding.webViewLayout)
@@ -189,6 +241,18 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                 loadUrl(client.baseLink)
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause()")
+        capabilityClient.removeListener(this, WearableManager.CAPABILITY_WEAR_APP)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume()")
+        capabilityClient.addListener(this, WearableManager.CAPABILITY_WEAR_APP)
     }
 
     private fun getCookies(data: String?): Map<String, String> {
@@ -253,25 +317,48 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                 }
             }
             R.id.refresh_wearable -> {
-                val pqr = pm.getString("NID_PQR")
-                val aut = pm.getString("NID_AUT")
-                val ses = pm.getString("NID_SES")
-                wearClient.putData(
-                    wearClient.NAVER_TOKEN,
-                    mapOf(
-                        "kr.yhs.checkin.token.NID_PQR" to (pqr ?: ""),
-                        "kr.yhs.checkin.token.NID_AUT" to (aut ?: ""),
-                        "kr.yhs.checkin.token.NID_SES" to (ses ?: "")
-                    ),
-                    successListener = {
-                        Log.i("WearableClient[Listener]", "Success send data to Wearable")
-                    }
-                )
+                if (wearClientDetected) {
+                    val pqr = pm.getString("NID_PQR")
+                    val aut = pm.getString("NID_AUT")
+                    val ses = pm.getString("NID_SES")
+                    wearClient.insertData(
+                        wearClient.naverToken,
+                        mapOf(
+                            "kr.yhs.checkin.token.NID_PQR" to (pqr ?: ""),
+                            "kr.yhs.checkin.token.NID_AUT" to (aut ?: ""),
+                            "kr.yhs.checkin.token.NID_SES" to (ses ?: "")
+                        ),
+                        successListener = {
+                            Log.i("WearableClient[Listener]", "Success send data to Wearable")
+                        }
+                    )
+                } else {
+                    Log.i(TAG, "Wearable is not detected")
+                }
             }
         }
         return false
     }
 
     companion object {
+        private const val TAG = "MainActivity"
     }
+
+    override fun onCapabilityChanged(capabilityInfo: CapabilityInfo) {
+        Log.d(TAG, "onCapabilityChanged(): $capabilityInfo")
+        wearNodesWithApp = capabilityInfo.nodes
+
+        launch {
+            val connectedNodes = nodeClient.connectedNodes.await()
+
+            withContext(Dispatchers.Main) {
+                allConnectedNodes = connectedNodes
+                wearProcess()
+            }
+        }
+    }
+
+    private lateinit var mJob: Job
+    override val coroutineContext: CoroutineContext
+        get() = mJob + Dispatchers.Main
 }

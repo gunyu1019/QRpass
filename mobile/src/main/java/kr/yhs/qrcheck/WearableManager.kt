@@ -1,6 +1,6 @@
-package kr.yhs.checkin
+package kr.yhs.qrcheck
 
-import android.app.Activity
+
 import android.os.Looper
 import android.util.Log
 import androidx.wear.remote.interactions.RemoteActivityHelper
@@ -13,32 +13,18 @@ import kr.yhs.qrcheck.MainActivity
 import kotlin.coroutines.CoroutineContext
 
 
-class WearableManager : CapabilityClient.OnCapabilityChangedListener, CoroutineScope {
+class WearableManager {
     private lateinit var pm: PackageManager
     private lateinit var dataClient: DataClient
-
-    private lateinit var capabilityClient: CapabilityClient
-    private lateinit var nodeClient: NodeClient
-    private lateinit var remoteActivityHelper: RemoteActivityHelper
-
-    private var wearNodesWithApp: Set<Node>? = null
-    private var allConnectedNodes: List<Node>? = null
-
-    val NAVER_TOKEN = "/naver/token"
+    val naverToken = "/naver/token"
 
     fun loadClient(context: MainActivity) {
-        mJob = Job()
-
         pm = PackageManager("QRpass", context)
         dataClient = Wearable.WearableOptions.Builder().setLooper(
             Looper.getMainLooper()
         ).build().let { options ->
             Wearable.getDataClient(context, options)
         }
-
-        capabilityClient = Wearable.getCapabilityClient(context)
-        nodeClient = Wearable.getNodeClient(context)
-        remoteActivityHelper = RemoteActivityHelper(context)
     }
 
     fun insertData(
@@ -73,68 +59,8 @@ class WearableManager : CapabilityClient.OnCapabilityChangedListener, CoroutineS
         }
     }
 
-    fun onPause() {
-        Log.d(TAG, "onPause()")
-        capabilityClient.removeListener(this, CAPABILITY_WEAR_APP)
-    }
-
-    fun onResume() {
-        Log.d(TAG, "onResume()")
-        capabilityClient.addListener(this, CAPABILITY_WEAR_APP)
-    }
-
-    private suspend fun findWearDevices() {
-        Log.d(TAG, "findWearDevices()")
-
-        try {
-            val capabilityInfo = capabilityClient
-                .getCapability(CAPABILITY_WEAR_APP, CapabilityClient.FILTER_ALL)
-                .await()
-
-            withContext(Dispatchers.Main) {
-                Log.d(TAG, "Capability request succeeded.")
-                wearNodesWithApp = capabilityInfo.nodes
-                Log.d(TAG, "Capable Nodes: $wearNodesWithApp")
-            }
-        } catch (cancellationException: CancellationException) {
-            // Request was cancelled normally
-            throw cancellationException
-        } catch (throwable: Throwable) {
-            Log.d(TAG, "Capability request failed to return any results.")
-        }
-    }
-
-    private suspend fun findAllConnections() {
-        Log.d(TAG, "findAllConnections()")
-
-        try {
-            val connectedNodes = nodeClient.connectedNodes.await()
-
-            withContext(Dispatchers.Main) {
-                allConnectedNodes = connectedNodes
-            }
-        } catch (cancellationException: CancellationException) {
-            // Request was cancelled normally
-        } catch (throwable: Throwable) {
-            Log.d(TAG, "Node request failed to return any results.")
-        }
-    }
-
     companion object {
         private const val TAG = "WearableManager"
-        private const val CAPABILITY_WEAR_APP = "qrpass_wear_app"
+        const val CAPABILITY_WEAR_APP = "qrpass_wear_app"
     }
-
-    override fun onCapabilityChanged(capabilityInfo: CapabilityInfo) {
-        Log.d(TAG, "onCapabilityChanged(): $capabilityInfo")
-        wearNodesWithApp = capabilityInfo.nodes
-
-        launch {
-            findAllConnections()
-        }
-    }
-
-    private lateinit var mJob: Job
-    override val coroutineContext: CoroutineContext
-        get() = mJob + Dispatchers.Main
 }

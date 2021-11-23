@@ -1,4 +1,4 @@
-package kr.yhs.checkin
+package kr.yhs.qrcheck
 
 import android.content.Context
 import android.content.SharedPreferences
