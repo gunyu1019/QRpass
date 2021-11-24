@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.TranslateAnimation
@@ -150,6 +151,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         val wearNodesWithApp = wearNodesWithApp
         val allConnectedNodes = allConnectedNodes
 
+        val menuItem = binding.bottomNavigationView.menu
         when {
             wearNodesWithApp == null || allConnectedNodes == null -> {
                 Log.d(TAG, "Waiting on Results for both connected nodes and nodes with app")
@@ -157,18 +159,22 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
             allConnectedNodes.isEmpty() -> {
                 Log.d(TAG, "No devices")
                 wearClientDetected = false
+                menuItem.findItem(R.id.refresh_wearable).isVisible = false
             }
             wearNodesWithApp.isEmpty() -> {
                 Log.d(TAG, "Missing on all devices")
-                wearClientDetected = false
+                wearClientDetected = true
+                menuItem.findItem(R.id.refresh_wearable).isVisible = true
             }
             wearNodesWithApp.size < allConnectedNodes.size -> {
                 Log.d(TAG, "Installed on some devices")
                 wearClientDetected = true
+                menuItem.findItem(R.id.refresh_wearable).isVisible = true
             }
             else -> {
                 Log.d(TAG, "Installed on all devices")
                 wearClientDetected = true
+                menuItem.findItem(R.id.refresh_wearable).isVisible = true
             }
         }
     }
@@ -220,9 +226,9 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                                     wearClient.insertData(
                                         wearClient.naverToken,
                                         mapOf(
-                                            "kr.yhs.checkin.token.NID_PQR" to (data["NID_PQR"] ?: ""),
-                                            "kr.yhs.checkin.token.NID_AUT" to (data["NID_AUT"] ?: ""),
-                                            "kr.yhs.checkin.token.NID_SES" to (data["NID_SES"] ?: "")
+                                            "kr.yhs.qrcheck.token.NID_PQR" to (data["NID_PQR"] ?: ""),
+                                            "kr.yhs.qrcheck.token.NID_AUT" to (data["NID_AUT"] ?: ""),
+                                            "kr.yhs.qrcheck.token.NID_SES" to (data["NID_SES"] ?: "")
                                         )
                                     )
                                 }
@@ -324,9 +330,9 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                     wearClient.insertData(
                         wearClient.naverToken,
                         mapOf(
-                            "kr.yhs.checkin.token.NID_PQR" to (pqr ?: ""),
-                            "kr.yhs.checkin.token.NID_AUT" to (aut ?: ""),
-                            "kr.yhs.checkin.token.NID_SES" to (ses ?: "")
+                            "kr.yhs.qrcheck.token.NID_PQR" to (pqr ?: ""),
+                            "kr.yhs.qrcheck.token.NID_AUT" to (aut ?: ""),
+                            "kr.yhs.qrcheck.token.NID_SES" to (ses ?: "")
                         ),
                         successListener = {
                             Log.i("WearableClient[Listener]", "Success send data to Wearable")

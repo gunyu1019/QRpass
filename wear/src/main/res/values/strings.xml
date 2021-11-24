@@ -1,8 +1,13 @@
 <resources>
-    <string name="app_name">QRcheck</string>
+    <string name="app_name">QRpass</string>
     <!--
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.
     -->
-    <string name="hello_world">Hello Square World!</string>
+    <string name="description_privacy_key">개인용 번호</string>
+    <string name="count">%d 초</string>
+    <string name="string">%s</string>
+    <string name="phone">휴대폰에서 설정해주세요.</string>
+    <string name="need_login">로그인이 만료되었습니다. 재설정이 필요합니다.</string>
+    <string name="need_authorize">휴대폰 인증이 필요합니다.</string>
 </resources>
