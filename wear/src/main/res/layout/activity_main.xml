@@ -12,11 +12,10 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        android:visibility="gone">
+        android:background="@color/white">
 
         <TextView
-            android:id="@+id/privateNumberText"
+            android:id="@+id/privateCodeText"
             style="@android:style/Widget.DeviceDefault.Light.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,7 +30,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/count"
+            android:id="@+id/timeCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/bottom_padding"
@@ -43,7 +42,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/qrCodeImage"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/top_padding"
@@ -51,10 +50,10 @@
             android:gravity="center"
             android:src="@drawable/logo_background"
             android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@+id/count"
-            app:layout_constraintEnd_toEndOf="@+id/privateNumberText"
-            app:layout_constraintStart_toStartOf="@+id/privateNumberText"
-            app:layout_constraintTop_toBottomOf="@+id/privateNumberText"
+            app:layout_constraintBottom_toTopOf="@+id/timeCount"
+            app:layout_constraintEnd_toEndOf="@+id/privateCodeText"
+            app:layout_constraintStart_toStartOf="@+id/privateCodeText"
+            app:layout_constraintTop_toBottomOf="@+id/privateCodeText"
             app:layout_constraintVertical_bias="1.0" />
 
         <ImageView
@@ -64,8 +63,8 @@
             android:background="@drawable/radius"
             android:src="@drawable/ic_baseline_refresh"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/count"
-            app:layout_constraintStart_toStartOf="@+id/count"
+            app:layout_constraintEnd_toEndOf="@+id/timeCount"
+            app:layout_constraintStart_toStartOf="@+id/timeCount"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -73,7 +72,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/warningLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/warningMessage"
@@ -94,10 +94,10 @@
             android:id="@+id/warningButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/string"
-            android:src="@drawable/ic_baseline_arrow_right_alt"
             android:background="@drawable/button"
             android:padding="10dp"
+            android:src="@drawable/ic_baseline_arrow_right_alt"
+            android:text="@string/string"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

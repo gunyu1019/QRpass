@@ -37,4 +37,13 @@ dependencies {
     implementation 'androidx.wear:wear-remote-interactions:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
     wearApp project(":wear")
+
+    // Jsoup
+    implementation 'org.jsoup:jsoup:1.13.1'
+
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.5.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.5.1"
 }
