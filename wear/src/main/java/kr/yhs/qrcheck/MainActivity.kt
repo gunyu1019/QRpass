@@ -99,20 +99,7 @@ class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityCh
             binding.warningLayout.visibility = View.GONE
         }
         client.setOnFailedListener {
-            binding.main.visibility = View.GONE
-            binding.progressLayout.visibility = View.GONE
-            binding.warningLayout.visibility = View.VISIBLE
-
-            when(it) {
-                "loginExpired" -> {
-                    binding.warningMessage.text = getString(R.string.login_expired)
-                    binding.warningButton.visibility = View.GONE
-                }
-                "phoneAuthorize" -> {
-                    binding.warningMessage.text = getString(R.string.phone_authorize)
-                    binding.warningButton.visibility = View.GONE
-                }
-            }
+            onFailedListener(it)
         }
 
         client.setResource(
@@ -123,6 +110,23 @@ class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityCh
         // binding.main.visibility = View.VISIBLE
         // binding.progressLayout.visibility = View.GONE
         // binding.warningLayout.visibility = View.GONE
+    }
+
+    fun onFailedListener(reason: String) {
+        binding.main.visibility = View.GONE
+        binding.progressLayout.visibility = View.GONE
+        binding.warningLayout.visibility = View.VISIBLE
+
+        when(reason) {
+            "loginExpired" -> {
+                binding.warningMessage.text = getString(R.string.login_expired)
+                binding.warningButton.visibility = View.GONE
+            }
+            "phoneAuthorize" -> {
+                binding.warningMessage.text = getString(R.string.phone_authorize)
+                binding.warningButton.visibility = View.GONE
+            }
+        }
     }
 
 
@@ -236,6 +240,14 @@ class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityCh
                             binding.progressLayout.visibility = View.VISIBLE
                             binding.warningLayout.visibility = View.GONE
                         }
+                    }
+                    client.setOnSucceedListener{
+                        binding.main.visibility = View.VISIBLE
+                        binding.progressLayout.visibility = View.GONE
+                        binding.warningLayout.visibility = View.GONE
+                    }
+                    client.setOnFailedListener {
+                        onFailedListener(it)
                     }
                 }
             } else if (event.type == DataEvent.TYPE_DELETED) {

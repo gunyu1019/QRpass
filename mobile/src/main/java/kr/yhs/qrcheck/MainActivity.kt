@@ -6,7 +6,6 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.TranslateAnimation
@@ -73,10 +72,13 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                 client = NaverClient(this@MainActivity)
             }
         }
+        client.setOnFailedListener {
+            webViewProcess(comment = it)
+        }
+
         client.setResource(
             binding.privateCode,
-            binding.qrImage,
-            binding.webViewFrame
+            binding.qrImage
         )
 
         // binding setting listener
