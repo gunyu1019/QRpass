@@ -68,13 +68,13 @@ class NaverClient(override val activity: MainActivity): BaseClient(activity) {
             deferred.await().let {
                 if(it["status"] as Boolean) {
                     responseStatus = true
-                    privateKeyResponse = (it["privateKey"] as String?)!!
-                    qrImageResponse = (it["qrCodeKey"] as String?)!!
-                    updateResource()
+                    val privateKeyResponse = (it["privateKey"] as String?)!!
+                    val qrImageResponse = (it["qrCodeKey"] as String?)!!
+                    onSucceed(privateKeyResponse, qrImageResponse)
                 } else {
                     responseStatus = false
-                    responseReason = (it["reason"] as String?)?:""
-                    failedResource()
+                    val responseReason = (it["reason"] as String?)?:""
+                    onFailed(responseReason)
                 }
             }
         }

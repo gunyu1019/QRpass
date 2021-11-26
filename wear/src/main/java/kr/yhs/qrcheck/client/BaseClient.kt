@@ -3,16 +3,19 @@ package kr.yhs.qrcheck.client
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
-import android.webkit.WebView
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.android.gms.tasks.OnSuccessListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kr.yhs.qrcheck.MainActivity
+import kr.yhs.qrcheck.client.listener.FailedResponse
+import kr.yhs.qrcheck.client.listener.SucceedResponse
 import kotlin.coroutines.CoroutineContext
 
-abstract class BaseClient(open val activity: MainActivity): CoroutineScope {
+abstract class BaseClient(open val activity: MainActivity): CoroutineScope, FailedResponse, SucceedResponse {
     private var privateKeyResource: TextView? = null
     private var qrImageResource: ImageView? = null
     var responseStatus: Boolean? = null
@@ -20,6 +23,9 @@ abstract class BaseClient(open val activity: MainActivity): CoroutineScope {
 
     lateinit var privateKeyResponse: String
     lateinit var qrImageResponse: Any
+
+    private var onSucceedListener: (() -> Unit)? = null
+    private var onFailedListener: ((String) -> Unit)? = null
 
     open val baseLink = ""
 
@@ -45,7 +51,17 @@ abstract class BaseClient(open val activity: MainActivity): CoroutineScope {
         qrImageResource!!.setImageBitmap(bitmap)
     }
 
-    fun updateResource() {
+    fun setOnSucceedListener(listener: (() -> Unit)) {
+        onSucceedListener = listener
+    }
+
+    fun setOnFailedListener(listener: ((String) -> Unit)) {
+        onFailedListener = listener
+    }
+
+    override fun onSucceed(privateKeyResponse: String, qrImageResponse: Any) {
+        this.privateKeyResponse = privateKeyResponse
+        this.qrImageResponse = qrImageResponse
         if (privateKeyResource != null)
             privateKeyResource!!.text = privateKeyResponse
 
@@ -53,13 +69,23 @@ abstract class BaseClient(open val activity: MainActivity): CoroutineScope {
             loadImageWithBase64(
                 qrImageResponse as String
             )
+        if (onSucceedListener != null)
+            onSucceedListener!!.invoke()
     }
 
-    fun failedResource() {
+    override fun onFailed(responseReason: String) {
+        Log.i(TAG, "onFailed(): $responseReason")
+        this.responseReason = responseReason
+        if (onFailedListener != null)
+            onFailedListener!!.invoke(responseReason)
     }
 
     abstract fun checkBaseLink(url: String): Boolean
     abstract fun getData()
+
+    companion object {
+        const val TAG = "Client"
+    }
 
     private lateinit var mJob: Job
     override val coroutineContext: CoroutineContext

@@ -50,6 +50,7 @@ class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityCh
 
         pm = PackageManager("QRpass", this@MainActivity)
         typeClient = pm.getInt("typeClient", default = -1)
+        Log.i(TAG, "typeClient: $typeClient")
 
         binding.warningButton.setOnClickListener {
             openAppProcess()
@@ -68,8 +69,12 @@ class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityCh
                 }
                 else -> {
                     Log.d(TAG, "\tDEVICE_TYPE_ERROR_UNKNOWN")
+                    binding.warningMessage.text = getString(R.string.device_not_support)
+                    binding.warningButton.visibility = View.GONE
+                    return
                 }
             }
+
             binding.main.visibility = View.GONE
             binding.progressLayout.visibility = View.GONE
             binding.warningLayout.visibility = View.VISIBLE
@@ -87,10 +92,37 @@ class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityCh
         binding.main.visibility = View.GONE
         binding.progressLayout.visibility = View.VISIBLE
         binding.warningLayout.visibility = View.GONE
+
+        client.setOnSucceedListener{
+            binding.main.visibility = View.VISIBLE
+            binding.progressLayout.visibility = View.GONE
+            binding.warningLayout.visibility = View.GONE
+        }
+        client.setOnFailedListener {
+            binding.main.visibility = View.GONE
+            binding.progressLayout.visibility = View.GONE
+            binding.warningLayout.visibility = View.VISIBLE
+
+            when(it) {
+                "loginExpired" -> {
+                    binding.warningMessage.text = getString(R.string.login_expired)
+                    binding.warningButton.visibility = View.GONE
+                }
+                "phoneAuthorize" -> {
+                    binding.warningMessage.text = getString(R.string.phone_authorize)
+                    binding.warningButton.visibility = View.GONE
+                }
+            }
+        }
+
         client.setResource(
             binding.privateCodeText,
             binding.qrCodeImage
         )
+        client.getData()
+        // binding.main.visibility = View.VISIBLE
+        // binding.progressLayout.visibility = View.GONE
+        // binding.warningLayout.visibility = View.GONE
     }
 
 
@@ -197,13 +229,9 @@ class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityCh
                             pm.setString("NID_AUT", aut)
                             pm.setString("NID_SES", ses)
 
-                            // webMain(
-                            //     mapOf(
-                            //         "NID_PQR" to pqr,
-                            //         "NID_AUT" to aut,
-                            //         "NID_SES" to ses
-                            //     )
-                            // )
+                            client = NaverClient(this@MainActivity)
+                            client.onLoad(pqr, aut, ses)
+
                             binding.main.visibility = View.GONE
                             binding.progressLayout.visibility = View.VISIBLE
                             binding.warningLayout.visibility = View.GONE
