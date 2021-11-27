@@ -16,6 +16,7 @@ import kotlinx.coroutines.tasks.await
 import kr.yhs.qrcheck.client.BaseClient
 import kr.yhs.qrcheck.client.NaverClient
 import kr.yhs.qrcheck.databinding.ActivityMainBinding
+import kotlin.concurrent.timer
 import kotlin.coroutines.CoroutineContext
 
 class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityChangedListener,
@@ -105,10 +106,33 @@ class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityCh
             binding.privateCodeText,
             binding.qrCodeImage
         )
+        mainProcess()
+    }
+
+    fun mainProcess() {
+        client.setOnSucceedListener {
+            binding.refreshBtn.visibility = View.GONE
+            binding.timeCount.text = getString(R.string.count, 15)
+
+            var second = 0
+            timer(period = 1000, initialDelay = 1000) {
+                this@MainActivity.runOnUiThread {
+                    binding.timeCount.text = getString(R.string.count, 15 - second)
+                }
+                second++
+                if (second == 15) {
+                    this@MainActivity.runOnUiThread {
+                        binding.timeCount.text = getString(R.string.count, 0)
+                        binding.refreshBtn.visibility = View.VISIBLE
+                    }
+                    cancel()
+                }
+            }
+        }
         client.getData()
-        // binding.main.visibility = View.VISIBLE
-        // binding.progressLayout.visibility = View.GONE
-        // binding.warningLayout.visibility = View.GONE
+        binding.main.visibility = View.VISIBLE
+        binding.progressLayout.visibility = View.GONE
+        binding.warningLayout.visibility = View.GONE
     }
 
     fun onFailedListener(reason: String) {

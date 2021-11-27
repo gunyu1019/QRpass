@@ -20,6 +20,7 @@ import kotlinx.coroutines.tasks.await
 import kr.yhs.qrcheck.client.BaseClient
 import kr.yhs.qrcheck.client.NaverClient
 import kr.yhs.qrcheck.databinding.ActivityMainBinding
+import kotlin.concurrent.timer
 import kotlin.coroutines.CoroutineContext
 
 class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener,
@@ -182,6 +183,27 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
     }
 
     private fun mainProcess() {
+        client.setOnSucceedListener {
+            binding.refreshBtn.visibility = View.GONE
+            binding.timerCount.text = getString(R.string.count, 15)
+
+            var second = 0
+            timer(period = 1000, initialDelay = 1000) {
+                this@MainActivity.runOnUiThread {
+                    binding.timerCount.text = getString(R.string.count, 15 - second)
+                }
+                second++
+                if (second == 15) {
+                    this@MainActivity.runOnUiThread {
+                        binding.timerCount.text = getString(R.string.count, 0)
+                        binding.refreshBtn.visibility = View.VISIBLE
+                    }
+                    cancel()
+                } else if (loginRequired) {
+                    cancel()
+                }
+            }
+        }
         if (typeClient == 0) {
             val pqr = pm.getString("NID_PQR")
             val aut = pm.getString("NID_AUT")
