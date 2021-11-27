@@ -106,6 +106,9 @@ class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityCh
             binding.privateCodeText,
             binding.qrCodeImage
         )
+        binding.refreshBtn.setOnClickListener{
+            mainProcess()
+        }
         mainProcess()
     }
 
