@@ -388,6 +388,22 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         }
     }
 
+    override fun onBackPressed() {
+        when {
+            infoSlideView -> {
+                slideDown(binding.infoLayout)
+                infoSlideView = false
+            }
+            logoutSlideView -> {
+                slideDown(binding.logoutLayout)
+                logoutSlideView = false
+            }
+            else -> {
+                super.onBackPressed()
+            }
+        }
+    }
+
     private lateinit var mJob: Job
     override val coroutineContext: CoroutineContext
         get() = mJob + Dispatchers.Main
