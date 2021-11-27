@@ -109,7 +109,7 @@ class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityCh
         mainProcess()
     }
 
-    fun mainProcess() {
+    private fun mainProcess() {
         client.setOnSucceedListener {
             binding.refreshBtn.visibility = View.GONE
             binding.timeCount.text = getString(R.string.count, 15)
@@ -135,7 +135,7 @@ class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityCh
         binding.warningLayout.visibility = View.GONE
     }
 
-    fun onFailedListener(reason: String) {
+    private fun onFailedListener(reason: String) {
         binding.main.visibility = View.GONE
         binding.progressLayout.visibility = View.GONE
         binding.warningLayout.visibility = View.VISIBLE
@@ -308,6 +308,7 @@ class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityCh
                         binding.main.visibility = View.VISIBLE
                         binding.progressLayout.visibility = View.GONE
                         binding.warningLayout.visibility = View.GONE
+                        mainProcess()
                     }
                     client.setOnFailedListener {
                         onFailedListener(it)
