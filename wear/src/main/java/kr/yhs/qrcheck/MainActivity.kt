@@ -52,11 +52,10 @@ class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityCh
         typeClient = pm.getInt("typeClient", default = -1)
         Log.i(TAG, "typeClient: $typeClient")
 
-        binding.warningButton.setOnClickListener {
-            openAppProcess()
-        }
-
         if (typeClient == -1) {
+            binding.warningButton.setOnClickListener {
+                openAppStoreProcess()
+            }
             when (PhoneTypeHelper.getPhoneDeviceType(applicationContext)) {
                 PhoneTypeHelper.DEVICE_TYPE_ANDROID -> {
                     Log.d(TAG, "\tDEVICE_TYPE_ANDROID")
@@ -133,13 +132,13 @@ class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityCh
     override fun onPause() {
         super.onPause()
         Wearable.getCapabilityClient(this).removeListener(this, CAPABILITY_PHONE_APP)
-        Wearable.getDataClient(this).addListener(this)
+        Wearable.getDataClient(this).removeListener(this)
     }
 
     override fun onResume() {
         super.onResume()
         Wearable.getCapabilityClient(this).addListener(this, CAPABILITY_PHONE_APP)
-        Wearable.getDataClient(this).removeListener(this)
+        Wearable.getDataClient(this).addListener(this)
         launch {
             connectionProcess()
         }
@@ -158,13 +157,53 @@ class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityCh
         }
     }
 
-    private fun openAppProcess() {
-        Log.d(TAG, "openAppInStoreOnPhone()")
+    private fun openAppStoreProcess() {
+        Log.d(TAG, "openAppStoreProcess()")
 
         val intent = when (PhoneTypeHelper.getPhoneDeviceType(applicationContext)) {
             PhoneTypeHelper.DEVICE_TYPE_ANDROID -> {
                 Log.d(TAG, "\tDEVICE_TYPE_ANDROID")
                 // Create Remote Intent to open Play Store listing of app on remote device.
+                Intent(Intent.ACTION_VIEW)
+                    .addCategory(Intent.CATEGORY_BROWSABLE)
+                    .setData(Uri.parse(ANDROID_MARKET_APP_URI))
+            }
+            PhoneTypeHelper.DEVICE_TYPE_IOS -> {
+                Log.d(TAG, "\tDEVICE_TYPE_IOS")
+
+                ConfirmationOverlay()
+                    .setType(ConfirmationOverlay.FAILURE_ANIMATION)
+                    .showOn(this@MainActivity)
+                return
+            }
+            else -> {
+                Log.d(TAG, "\tDEVICE_TYPE_ERROR_UNKNOWN")
+                return
+            }
+        }
+
+        launch {
+            try {
+                remoteActivityHelper.startRemoteActivity(intent).await()
+
+                ConfirmationOverlay().showOn(this@MainActivity)
+            } catch (cancellationException: CancellationException) {
+                // Request was cancelled normally
+                throw cancellationException
+            } catch (throwable: Throwable) {
+                ConfirmationOverlay()
+                    .setType(ConfirmationOverlay.FAILURE_ANIMATION)
+                    .showOn(this@MainActivity)
+            }
+        }
+    }
+
+    private fun openAppProcess() {
+        Log.d(TAG, "openAppProcess()")
+
+        val intent = when (PhoneTypeHelper.getPhoneDeviceType(applicationContext)) {
+            PhoneTypeHelper.DEVICE_TYPE_ANDROID -> {
+                Log.d(TAG, "\tDEVICE_TYPE_ANDROID")
                 Intent(Intent.ACTION_VIEW)
                     .addCategory(Intent.CATEGORY_BROWSABLE)
                     .setData(Uri.parse(ANDROID_MARKET_APP_URI))
@@ -223,9 +262,9 @@ class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityCh
                     Log.i(TAG, "onDataChanged(): item-url ${item.uri.path}")
                     if (item.uri.path == "/naver/token") {
                         DataMapItem.fromDataItem(item).dataMap.apply {
-                            val pqr = getString("kr.yhs.qrpass.token.NID_PQR") ?: ""
-                            val aut = getString("kr.yhs.qrpass.token.NID_AUT") ?: ""
-                            val ses = getString("kr.yhs.qrpass.token.NID_SES") ?: ""
+                            val pqr = getString("kr.yhs.qrcheck.token.NID_PQR") ?: ""
+                            val aut = getString("kr.yhs.qrcheck.token.NID_AUT") ?: ""
+                            val ses = getString("kr.yhs.qrcheck.token.NID_SES") ?: ""
 
                             typeClient = 0
                             pm.setInt("typeClient", typeClient)

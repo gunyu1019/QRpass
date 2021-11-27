@@ -8,8 +8,8 @@
     <string name="count">%d 초</string>
     <string name="string">%s</string>
     <string name="phone">휴대폰에서 설정해주세요.</string>
-    <string name="ios_not_support">죄송합니다. 아이폰은 지원하지 않습니다.</string>
+    <string name="ios_not_support">아이폰은 지원하지 않습니다.</string>
     <string name="device_not_support">지원하지 않는 기기입니다. :(</string>
-    <string name="login_expired">로그인이 만료되었습니다.</string>
+    <string name="login_expired">로그인이 만료되었습니다.\n재설정이 필요합니다.</string>
     <string name="phone_authorize">휴대폰 인증이 필요합니다.</string>
 </resources>

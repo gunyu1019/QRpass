@@ -20,11 +20,7 @@ class WearableManager {
 
     fun loadClient(context: MainActivity) {
         pm = PackageManager("QRpass", context)
-        dataClient = Wearable.WearableOptions.Builder().setLooper(
-            Looper.getMainLooper()
-        ).build().let { options ->
-            Wearable.getDataClient(context, options)
-        }
+        dataClient = Wearable.getDataClient(context)
     }
 
     fun insertData(
