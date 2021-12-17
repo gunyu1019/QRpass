@@ -28,9 +28,9 @@ class WarningActivity : AppCompatActivity(), CoroutineScope {
 
         remoteActivityHelper = RemoteActivityHelper(this)
 
-        val intent = getIntent()
-        val warnId = intent.getIntExtra("warning_id", R.string.phone)
-        val buttonActive = intent.getBooleanExtra("store_btn", false)
+        val intent = intent
+        val warnId = intent.getIntExtra(WARN_ID, R.string.phone)
+        val buttonActive = intent.getBooleanExtra(BUTTON_ACTIVE, false)
 
         if (buttonActive)
             binding.warningButton.visibility = View.VISIBLE
@@ -92,5 +92,7 @@ class WarningActivity : AppCompatActivity(), CoroutineScope {
         private const val TAG = "WarningActivity"
         private const val ANDROID_MARKET_APP_URI =
             "market://details?id=kr.yhs.qrpass"
+        const val WARN_ID = "warning_id"
+        const val BUTTON_ACTIVE = "button_active"
     }
 }

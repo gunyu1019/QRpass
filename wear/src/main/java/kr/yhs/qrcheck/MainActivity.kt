@@ -29,7 +29,7 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
     private val binding get() = mBinding!!
     private lateinit var pm: PackageManager
     private var typeClient: Int = 0
-    var page: ArrayList<ViewData> = ArrayList()
+    private var page: ArrayList<ViewData> = ArrayList()
 
     private lateinit var client: BaseClient
 
@@ -68,29 +68,30 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
         )
 
         if (typeClient == -1) {
+            val intent = Intent(this, WarningActivity::class.java)
             when (PhoneTypeHelper.getPhoneDeviceType(applicationContext)) {
                 PhoneTypeHelper.DEVICE_TYPE_ANDROID -> {
                     Log.d(TAG, "\tDEVICE_TYPE_ANDROID")
                 }
                 PhoneTypeHelper.DEVICE_TYPE_IOS -> {
                     Log.d(TAG, "\tDEVICE_TYPE_IOS")
-                    // binding.warningMessage.text = getString(R.string.ios_not_support)
-                    // binding.warningButton.visibility = View.GONE
+                    intent.putExtra(WarningActivity.WARN_ID, R.string.ios_not_support)
+                    intent.putExtra(WarningActivity.BUTTON_ACTIVE, false)
+                    startActivity(intent)
                     return
                 }
                 else -> {
                     Log.d(TAG, "\tDEVICE_TYPE_ERROR_UNKNOWN")
-                    // binding.warningMessage.text = getString(R.string.device_not_support)
-                    // binding.warningButton.visibility = View.GONE
+                    intent.putExtra(WarningActivity.WARN_ID, R.string.device_not_support)
+                    intent.putExtra(WarningActivity.BUTTON_ACTIVE, false)
+                    startActivity(intent)
                     return
                 }
             }
 
-            // binding.main.visibility = View.GONE
-            // binding.progressLayout.visibility = View.GONE
-            // binding.warningLayout.visibility = View.VISIBLE
-            // binding.warningButton.visibility = View.VISIBLE
-            // binding.warningMessage.text = getString(R.string.phone)
+            intent.putExtra(WarningActivity.WARN_ID, R.string.phone)
+            intent.putExtra(WarningActivity.BUTTON_ACTIVE, true)
+            startActivity(intent)
             return
         } else if(typeClient == 0) {
             val pqr = pm.getString("NID_PQR")
@@ -99,10 +100,6 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
             client = NaverClient(this)
             client.onLoad(pqr, aut, ses)
         }
-
-        // binding.main.visibility = View.GONE
-        // binding.progressLayout.visibility = View.VISIBLE
-        // binding.warningLayout.visibility = View.GONE
 
         client.setOnSucceedListener{
             // binding.main.visibility = View.VISIBLE
