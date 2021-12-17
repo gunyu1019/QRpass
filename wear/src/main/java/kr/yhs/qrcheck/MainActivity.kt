@@ -36,6 +36,9 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
     private lateinit var capabilityClient: CapabilityClient
     private lateinit var nodeClient: NodeClient
 
+    private lateinit var qrActivity: ViewData
+    private lateinit var privateCodeActivity: ViewData
+
     private var phoneNode: Node? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,20 +55,20 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
         typeClient = pm.getInt("typeClient", default = -1)
         Log.i(TAG, "typeClient: $typeClient")
 
-        page.add(
+        privateCodeActivity =
             ViewData(
                 R.layout.private_code,
                 activity = PrivateCodeActivity(),
                 context = this@MainActivity
             )
-        )
-        page.add(
+        qrActivity =
             ViewData(
                 R.layout.qr_image,
                 activity = QRImageActivity(),
                 context = this@MainActivity
             )
-        )
+        page.add(privateCodeActivity)
+        page.add(qrActivity)
 
         if (typeClient == -1) {
             val intent = Intent(this, WarningActivity::class.java)
@@ -102,17 +105,15 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
         }
 
         client.setOnSucceedListener{
-            // binding.main.visibility = View.VISIBLE
-            // binding.progressLayout.visibility = View.GONE
-            // binding.warningLayout.visibility = View.GONE
+            qrActivity.activity
         }
         client.setOnFailedListener {
             onFailedListener(it)
         }
 
         client.setResource(
-            // binding.privateCodeText,
-            // binding.qrCodeImage
+            privateCodeActivity.activity!!.privateCodeTextView,
+            qrActivity.activity!!.imageView
         )
         // binding.refreshBtn.setOnClickListener{
         //     mainProcess()
@@ -123,23 +124,6 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
 
     private fun mainProcess() {
         client.setOnSucceedListener {
-            // binding.refreshBtn.visibility = View.GONE
-            // binding.timeCount.text = getString(R.string.count, 15)
-
-            var second = 0
-            timer(period = 1000, initialDelay = 1000) {
-                this@MainActivity.runOnUiThread {
-                    // binding.timeCount.text = getString(R.string.count, 15 - second)
-                }
-                second++
-                if (second == 15) {
-                    this@MainActivity.runOnUiThread {
-                        // binding.timeCount.text = getString(R.string.count, 0)
-                        // binding.refreshBtn.visibility = View.VISIBLE
-                    }
-                    cancel()
-                }
-            }
         }
         client.getData()
         // binding.main.visibility = View.VISIBLE
@@ -148,20 +132,19 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
     }
 
     private fun onFailedListener(reason: String) {
-        // binding.main.visibility = View.GONE
-        // binding.progressLayout.visibility = View.GONE
-        // binding.warningLayout.visibility = View.VISIBLE
+        val intent = Intent(this, WarningActivity::class.java)
 
         when(reason) {
             "loginExpired" -> {
-                // binding.warningMessage.text = getString(R.string.login_expired)
-                // binding.warningButton.visibility = View.GONE
+                intent.putExtra(WarningActivity.WARN_ID, R.string.login_expired)
+                intent.putExtra(WarningActivity.BUTTON_ACTIVE, false)
             }
             "phoneAuthorize" -> {
-                // binding.warningMessage.text = getString(R.string.phone_authorize)
-                // binding.warningButton.visibility = View.GONE
+                intent.putExtra(WarningActivity.WARN_ID, R.string.phone_authorize)
+                intent.putExtra(WarningActivity.BUTTON_ACTIVE, false)
             }
         }
+        startActivity(intent)
     }
 
 
