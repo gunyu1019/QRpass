@@ -13,28 +13,24 @@ import com.google.android.gms.wearable.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.tasks.await
-import kr.yhs.qrcheck.activity.PrivateCodeActivity
-import kr.yhs.qrcheck.activity.QRImageActivity
-import kr.yhs.qrcheck.adapter.viewPage.ViewData
-import kr.yhs.qrcheck.adapter.viewPage.ViewPagerAdapter
 import kr.yhs.qrcheck.client.BaseClient
 import kr.yhs.qrcheck.client.NaverClient
 import kr.yhs.qrcheck.databinding.ActivityMainBinding
 import kotlin.concurrent.timer
 import kotlin.coroutines.CoroutineContext
 
-class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityChangedListener,
+class MainActivity_1 : Activity(), CoroutineScope , CapabilityClient.OnCapabilityChangedListener,
     DataClient.OnDataChangedListener {
     private var mBinding: ActivityMainBinding? = null
     private val binding get() = mBinding!!
     private lateinit var pm: PackageManager
     private var typeClient: Int = 0
-    var page: ArrayList<ViewData> = ArrayList()
 
     private lateinit var client: BaseClient
 
     private lateinit var capabilityClient: CapabilityClient
     private lateinit var nodeClient: NodeClient
+    private lateinit var remoteActivityHelper: RemoteActivityHelper
 
     private var phoneNode: Node? = null
 
@@ -47,27 +43,20 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
 
         capabilityClient = Wearable.getCapabilityClient(this)
         nodeClient = Wearable.getNodeClient(this)
+        remoteActivityHelper = RemoteActivityHelper(this)
 
-        pm = PackageManager("QRpass", this@MainActivity)
+        // binding.main.visibility = View.GONE
+        // binding.progressLayout.visibility = View.VISIBLE
+        // binding.warningLayout.visibility = View.GONE
+
+        pm = PackageManager("QRpass", this@MainActivity_1)
         typeClient = pm.getInt("typeClient", default = -1)
         Log.i(TAG, "typeClient: $typeClient")
 
-        page.add(
-            ViewData(
-                R.layout.private_code,
-                activity = PrivateCodeActivity(),
-                context = this@MainActivity
-            )
-        )
-        page.add(
-            ViewData(
-                R.layout.qr_image,
-                activity = QRImageActivity(),
-                context = this@MainActivity
-            )
-        )
-
         if (typeClient == -1) {
+            // binding.warningButton.setOnClickListener {
+            //    openAppStoreProcess()
+            // }
             when (PhoneTypeHelper.getPhoneDeviceType(applicationContext)) {
                 PhoneTypeHelper.DEVICE_TYPE_ANDROID -> {
                     Log.d(TAG, "\tDEVICE_TYPE_ANDROID")
@@ -120,8 +109,7 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
         // binding.refreshBtn.setOnClickListener{
         //     mainProcess()
         // }
-        // mainProcess()
-        binding.viewPager.adapter = ViewPagerAdapter(page)
+        mainProcess()
     }
 
     private fun mainProcess() {
@@ -131,12 +119,12 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
 
             var second = 0
             timer(period = 1000, initialDelay = 1000) {
-                this@MainActivity.runOnUiThread {
+                this@MainActivity_1.runOnUiThread {
                     // binding.timeCount.text = getString(R.string.count, 15 - second)
                 }
                 second++
                 if (second == 15) {
-                    this@MainActivity.runOnUiThread {
+                    this@MainActivity_1.runOnUiThread {
                         // binding.timeCount.text = getString(R.string.count, 0)
                         // binding.refreshBtn.visibility = View.VISIBLE
                     }
@@ -196,6 +184,87 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
         }
     }
 
+    private fun openAppStoreProcess() {
+        Log.d(TAG, "openAppStoreProcess()")
+
+        val intent = when (PhoneTypeHelper.getPhoneDeviceType(applicationContext)) {
+            PhoneTypeHelper.DEVICE_TYPE_ANDROID -> {
+                Log.d(TAG, "\tDEVICE_TYPE_ANDROID")
+                // Create Remote Intent to open Play Store listing of app on remote device.
+                Intent(Intent.ACTION_VIEW)
+                    .addCategory(Intent.CATEGORY_BROWSABLE)
+                    .setData(Uri.parse(ANDROID_MARKET_APP_URI))
+            }
+            PhoneTypeHelper.DEVICE_TYPE_IOS -> {
+                Log.d(TAG, "\tDEVICE_TYPE_IOS")
+
+                ConfirmationOverlay()
+                    .setType(ConfirmationOverlay.FAILURE_ANIMATION)
+                    .showOn(this@MainActivity_1)
+                return
+            }
+            else -> {
+                Log.d(TAG, "\tDEVICE_TYPE_ERROR_UNKNOWN")
+                return
+            }
+        }
+
+        launch {
+            try {
+                remoteActivityHelper.startRemoteActivity(intent).await()
+
+                ConfirmationOverlay().showOn(this@MainActivity_1)
+            } catch (cancellationException: CancellationException) {
+                // Request was cancelled normally
+                throw cancellationException
+            } catch (throwable: Throwable) {
+                ConfirmationOverlay()
+                    .setType(ConfirmationOverlay.FAILURE_ANIMATION)
+                    .showOn(this@MainActivity_1)
+            }
+        }
+    }
+
+    private fun openAppProcess() {
+        Log.d(TAG, "openAppProcess()")
+
+        val intent = when (PhoneTypeHelper.getPhoneDeviceType(applicationContext)) {
+            PhoneTypeHelper.DEVICE_TYPE_ANDROID -> {
+                Log.d(TAG, "\tDEVICE_TYPE_ANDROID")
+                Intent(Intent.ACTION_VIEW)
+                    .addCategory(Intent.CATEGORY_BROWSABLE)
+                    .setData(Uri.parse(ANDROID_MARKET_APP_URI))
+            }
+            PhoneTypeHelper.DEVICE_TYPE_IOS -> {
+                Log.d(TAG, "\tDEVICE_TYPE_IOS")
+
+                ConfirmationOverlay()
+                    .setType(ConfirmationOverlay.FAILURE_ANIMATION)
+                    .showOn(this@MainActivity_1)
+                return
+            }
+            else -> {
+                Log.d(TAG, "\tDEVICE_TYPE_ERROR_UNKNOWN")
+                return
+            }
+        }
+
+        launch {
+            try {
+                remoteActivityHelper.startRemoteActivity(intent).await()
+
+                ConfirmationOverlay().showOn(this@MainActivity_1)
+            } catch (cancellationException: CancellationException) {
+                // Request was cancelled normally
+                throw cancellationException
+            } catch (throwable: Throwable) {
+                ConfirmationOverlay()
+                    .setType(ConfirmationOverlay.FAILURE_ANIMATION)
+                    .showOn(this@MainActivity_1)
+            }
+        }
+    }
+
     companion object {
         const val CAPABILITY_PHONE_APP = "qrpass_phone_app"
         private const val TAG = "MainActivity"
@@ -226,7 +295,7 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
                             pm.setString("NID_AUT", aut)
                             pm.setString("NID_SES", ses)
 
-                            client = NaverClient(this@MainActivity)
+                            client = NaverClient(this@MainActivity_1)
                             client.onLoad(pqr, aut, ses)
 
                             // binding.main.visibility = View.GONE
