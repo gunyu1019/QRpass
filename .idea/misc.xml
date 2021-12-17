@@ -4,9 +4,12 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/ic_baseline_access_timer.xml" value="0.40260416666666665" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/ic_baseline_info.xml" value="0.40260416666666665" />
         <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/ic_baseline_info_64.xml" value="0.40260416666666665" />
         <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/ic_baseline_login_64.xml" value="0.40260416666666665" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/ic_baseline_refresh.xml" value="0.40260416666666665" />
         <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/ic_baseline_refresh_64.xml" value="0.40260416666666665" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/ic_baseline_settings.xml" value="0.40260416666666665" />
         <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/ic_baseline_settings_64.xml" value="0.40260416666666665" />
         <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.40260416666666665" />
         <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/drawable-v24/info_background.xml" value="0.40260416666666665" />
@@ -18,14 +21,17 @@
         <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/menu/dropdown.xml" value="0.21822916666666667" />
         <entry key="..\:/AndroidStudio/QRcheck-2/mobile/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.40260416666666665" />
         <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/drawable/button.xml" value="1.082051282051282" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/drawable/circle_shape.xml" value="1.1923076923076923" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/drawable/circular_progress_bar.xml" value="1.1923076923076923" />
         <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/drawable/ic_baseline_arrow_right_alt.xml" value="1.082051282051282" />
         <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/drawable/ic_baseline_refresh_64.xml" value="1.082051282051282" />
         <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/drawable/radius.xml" value="1.082051282051282" />
-        <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/layout/activity_main.xml" value="0.8787878787878788" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/layout/activity_main.xml" value="1.0" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/layout/activity_main_1.xml" value="0.8282051282051283" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

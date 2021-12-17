@@ -19,7 +19,7 @@ import kr.yhs.qrcheck.databinding.ActivityMainBinding
 import kotlin.concurrent.timer
 import kotlin.coroutines.CoroutineContext
 
-class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityChangedListener,
+class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityChangedListener,
     DataClient.OnDataChangedListener {
     private var mBinding: ActivityMainBinding? = null
     private val binding get() = mBinding!!
@@ -272,10 +272,6 @@ class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityCh
             "market://details?id=kr.yhs.qrpass"
     }
 
-    private lateinit var mJob: Job
-    override val coroutineContext: CoroutineContext
-        get() = mJob + Dispatchers.Main
-
     override fun onCapabilityChanged(capabilityInfo: CapabilityInfo) {
         Log.d(TAG, "onCapabilityChanged(): $capabilityInfo")
         phoneNode = capabilityInfo.nodes.firstOrNull()
@@ -329,4 +325,8 @@ class MainActivity : Activity(), CoroutineScope, CapabilityClient.OnCapabilityCh
             }
         }
     }
+
+    private lateinit var mJob: Job
+    override val coroutineContext: CoroutineContext
+        get() = mJob + Dispatchers.Main
 }
