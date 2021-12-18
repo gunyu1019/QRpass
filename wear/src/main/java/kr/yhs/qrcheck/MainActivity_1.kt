@@ -26,7 +26,7 @@ import kr.yhs.qrcheck.client.NaverClient
 import kr.yhs.qrcheck.databinding.ActivityMainBinding
 import kotlin.coroutines.CoroutineContext
 
-class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityChangedListener,
+class MainActivity_1 : Activity(), CoroutineScope , CapabilityClient.OnCapabilityChangedListener,
     DataClient.OnDataChangedListener {
     private var mBinding: ActivityMainBinding? = null
     private val binding get() = mBinding!!
@@ -56,7 +56,7 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
         nodeClient = Wearable.getNodeClient(this)
         remoteActivityHelper = RemoteActivityHelper(this)
 
-        pm = PackageManager("QRpass", this@MainActivity)
+        pm = PackageManager("QRpass", this@MainActivity_1)
         typeClient = pm.getInt("typeClient", default = -1)
         Log.i(TAG, "typeClient: $typeClient")
 
@@ -64,13 +64,13 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
             ViewData(
                 R.layout.private_code,
                 activity = PrivateCodeActivity(),
-                context = this@MainActivity
+                context = this@MainActivity_1
             )
         qrActivity =
             ViewData(
                 R.layout.qr_image,
                 activity = QRImageActivity(),
-                context = this@MainActivity
+                context = this@MainActivity_1
             )
         page.add(privateCodeActivity)
         page.add(qrActivity)
@@ -78,7 +78,8 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
         Log.i(TAG, "page: ${R.layout.qr_image}")
         binding.warningLayout.visibility = View.GONE
         binding.viewPager.adapter = ViewPagerAdapter(page)
-
+        Log.i(TAG, "page: ${page[binding.viewPager.currentItem]}")
+        return
         if (typeClient == -1) {
             when (PhoneTypeHelper.getPhoneDeviceType(applicationContext)) {
                 PhoneTypeHelper.DEVICE_TYPE_ANDROID -> {
@@ -103,6 +104,8 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
             warningProcess(
                 R.string.phone, true
             )
+            startActivity(intent)
+            return
         } else if(typeClient == 0) {
             val pqr = pm.getString("NID_PQR")
             val aut = pm.getString("NID_AUT")
@@ -117,6 +120,7 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
         client.setOnFailedListener {
             onFailedListener(it)
         }
+        return
         client.setResource(
             privateCodeActivity.activity!!.privateCodeTextView,
             qrActivity.activity!!.imageView
@@ -140,7 +144,7 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
 
                 ConfirmationOverlay()
                     .setType(ConfirmationOverlay.FAILURE_ANIMATION)
-                    .showOn(this@MainActivity)
+                    .showOn(this@MainActivity_1)
                 return
             }
             else -> {
@@ -153,14 +157,14 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
             try {
                 remoteActivityHelper.startRemoteActivity(intent).await()
 
-                ConfirmationOverlay().showOn(this@MainActivity)
+                ConfirmationOverlay().showOn(this@MainActivity_1)
             } catch (cancellationException: CancellationException) {
                 // Request was cancelled normally
                 throw cancellationException
             } catch (throwable: Throwable) {
                 ConfirmationOverlay()
                     .setType(ConfirmationOverlay.FAILURE_ANIMATION)
-                    .showOn(this@MainActivity)
+                    .showOn(this@MainActivity_1)
             }
         }
     }
@@ -258,7 +262,7 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
                             pm.setString("NID_AUT", aut)
                             pm.setString("NID_SES", ses)
 
-                            client = NaverClient(this@MainActivity)
+                            client = NaverClient(this@MainActivity_1)
                             client.onLoad(pqr, aut, ses)
 
                             // binding.main.visibility = View.GONE

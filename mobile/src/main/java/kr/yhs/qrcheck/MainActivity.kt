@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/gunyu1019/QRpass"))
             startActivity(intent)
         }
-        binding.websiteButton.setOnClickListener {
+         binding.websiteButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://yhs.kr"))
             startActivity(intent)
         }

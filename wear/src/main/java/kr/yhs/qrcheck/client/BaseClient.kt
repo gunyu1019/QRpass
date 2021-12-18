@@ -1,5 +1,6 @@
 package kr.yhs.qrcheck.client
 
+import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
@@ -15,7 +16,7 @@ import kr.yhs.qrcheck.client.listener.FailedResponse
 import kr.yhs.qrcheck.client.listener.SucceedResponse
 import kotlin.coroutines.CoroutineContext
 
-abstract class BaseClient(open val activity: MainActivity): CoroutineScope, FailedResponse, SucceedResponse {
+abstract class BaseClient(open val activity: Activity): CoroutineScope, FailedResponse, SucceedResponse {
     private var privateKeyResource: TextView? = null
     private var qrImageResource: ImageView? = null
     var responseStatus: Boolean? = null

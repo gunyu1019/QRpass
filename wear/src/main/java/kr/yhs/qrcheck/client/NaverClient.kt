@@ -1,12 +1,13 @@
 package kr.yhs.qrcheck.client
 
+import android.app.Activity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kr.yhs.qrcheck.MainActivity
 import org.jsoup.Jsoup
 
-class NaverClient(override val activity: MainActivity): BaseClient(activity) {
+class NaverClient(override val activity: Activity): BaseClient(activity) {
     private lateinit var keyPQR: String
     private lateinit var keyAUT: String
     private lateinit var keySES: String
