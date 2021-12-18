@@ -7,36 +7,26 @@ import android.util.Base64
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
-import com.google.android.gms.tasks.OnSuccessListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kr.yhs.qrcheck.MainActivity
 import kr.yhs.qrcheck.client.listener.FailedResponse
 import kr.yhs.qrcheck.client.listener.SucceedResponse
 import kotlin.coroutines.CoroutineContext
 
 abstract class BaseClient(open val activity: Activity): CoroutineScope, FailedResponse, SucceedResponse {
-    private var privateKeyResource: TextView? = null
-    private var qrImageResource: ImageView? = null
+    var privateKeyResource: TextView? = null
+    var qrImageResource: ImageView? = null
     var responseStatus: Boolean? = null
     lateinit var responseReason: String
 
-    lateinit var privateKeyResponse: String
-    lateinit var qrImageResponse: Any
+    var privateKeyResponse: String? = null
+    var qrImageResponse: Any? = null
 
     private var onSucceedListener: (() -> Unit)? = null
     private var onFailedListener: ((String) -> Unit)? = null
 
     open val baseLink = ""
-
-    fun setResource(
-        privateKey: TextView? = null,
-        qrImage: ImageView? = null
-    ) {
-        privateKeyResource = privateKey
-        qrImageResource = qrImage
-    }
 
     open fun <T> onLoad(vararg args: T) {
         mJob = Job()

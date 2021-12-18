@@ -34,7 +34,7 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
     private var typeClient: Int = 0
     private var page: ArrayList<ViewData> = ArrayList()
 
-    private lateinit var client: BaseClient
+    lateinit var client: BaseClient
 
     private lateinit var capabilityClient: CapabilityClient
     private lateinit var nodeClient: NodeClient
@@ -75,7 +75,6 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
         page.add(privateCodeActivity)
         page.add(qrActivity)
 
-        Log.i(TAG, "page: ${R.layout.qr_image}")
         binding.warningLayout.visibility = View.GONE
         binding.viewPager.adapter = ViewPagerAdapter(page)
 
@@ -111,17 +110,7 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
             client.onLoad(pqr, aut, ses)
         }
 
-        client.setOnSucceedListener{
-            qrActivity.activity
-        }
-        client.setOnFailedListener {
-            onFailedListener(it)
-        }
-        client.setResource(
-            privateCodeActivity.activity!!.privateCodeTextView,
-            qrActivity.activity!!.imageView
-        )
-        mainProcess()
+        initProcess()
     }
 
     private fun openAppStoreProcess() {
@@ -165,10 +154,15 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
         }
     }
 
-    private fun mainProcess() {
-        // client.setOnSucceedListener {
-        // }
-        client.getData()
+    private fun initProcess() {
+        client.setOnSucceedListener{
+            binding.progressLayout.visibility = View.GONE
+            binding.warningLayout.visibility = View.GONE
+        }
+
+        client.setOnFailedListener {
+            onFailedListener(it)
+        }
     }
 
     private fun onFailedListener(reason: String) {
@@ -213,6 +207,12 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
                 binding.viewPager.currentItem -= 1
         }
         return super.onGenericMotionEvent(event)
+    }
+
+    fun nextPage() {
+        if (binding.viewPager.currentItem <= binding.viewPager.adapter!!.itemCount)
+            binding.viewPager.currentItem += 1
+        return
     }
 
     private fun connectionProcess() {
@@ -261,16 +261,10 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
                             client = NaverClient(this@MainActivity)
                             client.onLoad(pqr, aut, ses)
 
-                            // binding.main.visibility = View.GONE
-                            // binding.progressLayout.visibility = View.VISIBLE
-                            // binding.warningLayout.visibility = View.GONE
+                            binding.progressLayout.visibility = View.VISIBLE
+                            binding.warningLayout.visibility = View.GONE
+                            initProcess()
                         }
-                    }
-                    client.setOnSucceedListener{
-                        // binding.main.visibility = View.VISIBLE
-                        // binding.progressLayout.visibility = View.GONE
-                        // binding.warningLayout.visibility = View.GONE
-                        mainProcess()
                     }
                     client.setOnFailedListener {
                         onFailedListener(it)

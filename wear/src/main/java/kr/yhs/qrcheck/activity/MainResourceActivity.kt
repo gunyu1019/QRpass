@@ -1,16 +1,17 @@
 package kr.yhs.qrcheck.activity
 
-import android.app.Activity
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import kr.yhs.qrcheck.MainActivity
 import kr.yhs.qrcheck.adapter.viewPage.ViewData
 
 abstract class MainResourceActivity {
     var id = 0
     lateinit var view: View
-    lateinit var context: Activity
+    lateinit var context: MainActivity
 
+    // Customize (Resource)
     open lateinit var privateCodeTextView: TextView
     open lateinit var imageView: ImageView
     open lateinit var refreshButton: ImageView
@@ -26,6 +27,7 @@ abstract class MainResourceActivity {
 
     abstract fun onCreate()
 
+    // Customize (Function)
     open fun processTimer() {
         return
     }

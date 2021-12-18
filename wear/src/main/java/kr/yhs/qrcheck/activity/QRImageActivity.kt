@@ -11,10 +11,19 @@ class QRImageActivity: MainResourceActivity() {
         imageView = view.findViewById(R.id.qrCodeImageView)
         refreshButton = view.findViewById(R.id.refreshBtn)
         timerTextView = view.findViewById(R.id.timerTextView)
+
+        refreshButton.setOnClickListener {
+            timerProcess()
+        }
+        context.client.qrImageResource = imageView
+        timerProcess()
     }
 
-    override fun processTimer() {
+    fun timerProcess() {
         var second = 0
+        context.client.getData()
+        refreshButton.visibility = View.GONE
+        timerTextView.text = context.getString(R.string.count, 15)
         timer(period = 1000, initialDelay = 1000) {
             context.runOnUiThread {
                 timerTextView.text = context.getString(R.string.count, 15 - second)

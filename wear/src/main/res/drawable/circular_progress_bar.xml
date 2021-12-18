@@ -3,7 +3,7 @@
     android:fromDegrees="270"
     android:toDegrees="270">
     <shape
-        android:innerRadiusRatio="2.15"
+        android:innerRadiusRatio="2.075"
         android:shape="ring"
         android:useLevel="true"><!-- this line fixes the issue for lollipop api 21 -->
 
