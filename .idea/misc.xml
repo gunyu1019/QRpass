@@ -26,6 +26,7 @@
         <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/drawable/circular_progress_bar.xml" value="1.1923076923076923" />
         <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/drawable/ic_baseline_arrow_right_alt.xml" value="1.082051282051282" />
         <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/drawable/ic_baseline_refresh_64.xml" value="1.082051282051282" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/drawable/ic_dashboard.xml" value="1.115625" />
         <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/drawable/radius.xml" value="1.082051282051282" />
         <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/drawable/timer_background.xml" value="1.6743589743589744" />
         <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/layout/activity_main.xml" value="1.0" />
@@ -34,7 +35,7 @@
         <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/layout/activity_main_backup.xml" value="1.8974358974358974" />
         <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/layout/activity_warning.xml" value="1.0" />
         <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/layout/activity_wearing.xml" value="0.9" />
-        <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/layout/page_viewer.xml" value="1.8974358974358974" />
+        <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/layout/page_viewer.xml" value="1.0" />
         <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/layout/private_code.xml" value="0.8589743589743589" />
         <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/layout/qr_image.xml" value="0.8589743589743589" />
         <entry key="..\:/AndroidStudio/QRcheck-2/wear/src/main/res/layout/warning_main.xml" value="1.0" />

@@ -35,6 +35,7 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
     private var page: ArrayList<ViewData> = ArrayList()
 
     lateinit var client: BaseClient
+    var clientInitialized: Boolean = false
 
     private lateinit var capabilityClient: CapabilityClient
     private lateinit var nodeClient: NodeClient
@@ -102,11 +103,13 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
             warningProcess(
                 R.string.phone, true
             )
+            return
         } else if(typeClient == 0) {
             val pqr = pm.getString("NID_PQR")
             val aut = pm.getString("NID_AUT")
             val ses = pm.getString("NID_SES")
             client = NaverClient(this)
+            clientInitialized = true
             client.onLoad(pqr, aut, ses)
         }
 
@@ -259,6 +262,7 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
                             pm.setString("NID_SES", ses)
 
                             client = NaverClient(this@MainActivity)
+                            clientInitialized = true
                             client.onLoad(pqr, aut, ses)
 
                             binding.progressLayout.visibility = View.VISIBLE

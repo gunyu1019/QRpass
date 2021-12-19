@@ -14,11 +14,16 @@ class QRImageActivity: MainResourceActivity() {
         timerTextView = view.findViewById(R.id.timerTextView)
         processBar = view.findViewById(R.id.circularProgressIndicator)
 
+        timerTextView.text = context.getString(R.string.count, 15)
+        refreshButton.visibility = View.GONE
+
         refreshButton.setOnClickListener {
             timerProcess()
         }
-        context.client.qrImageResource = imageView
-        timerProcess()
+        if (context.clientInitialized) {
+            context.client.qrImageResource = imageView
+            timerProcess()
+        }
     }
 
     private fun timerProcess() {
