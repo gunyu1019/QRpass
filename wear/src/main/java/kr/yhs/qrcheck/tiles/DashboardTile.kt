@@ -1,26 +1,26 @@
 package kr.yhs.qrcheck.tiles
 
+import androidx.core.content.ContextCompat
+import androidx.wear.tiles.*
 import androidx.wear.tiles.ColorBuilders.argb
 import androidx.wear.tiles.DeviceParametersBuilders.DeviceParameters
 import androidx.wear.tiles.DimensionBuilders.*
 import androidx.wear.tiles.LayoutElementBuilders.*
+import androidx.wear.tiles.ModifiersBuilders.Clickable
 import androidx.wear.tiles.ModifiersBuilders.Modifiers
-import androidx.wear.tiles.RequestBuilders
 import androidx.wear.tiles.ResourceBuilders.Resources
-import androidx.wear.tiles.TileBuilders
-import androidx.wear.tiles.TileService
 import androidx.wear.tiles.TimelineBuilders.Timeline
 import androidx.wear.tiles.TimelineBuilders.TimelineEntry
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.*
 import kotlinx.coroutines.guava.future
+import kr.yhs.qrcheck.MainActivity
+import kr.yhs.qrcheck.R
 import kr.yhs.qrcheck.tiles.LayoutBuilder.font
 import kr.yhs.qrcheck.tiles.LayoutBuilder.text
 import kr.yhs.qrcheck.tiles.TilesBuilder.background
-import kr.yhs.qrcheck.tiles.TilesBuilder.border
 import kr.yhs.qrcheck.tiles.TilesBuilder.corner
 import kr.yhs.qrcheck.tiles.TilesBuilder.padding
-import org.jsoup.Jsoup
 
 
 class DashboardTile: TileService() {
@@ -87,6 +87,71 @@ class DashboardTile: TileService() {
                         size = sp(13f)
                     )
                 )
+            )
+            addContent(
+                getSpacer(
+                    height = dp(30f)
+                )
+            )
+            addContent(
+                getButton(
+                    R.color.tile_button,
+                    clickable = Clickable.Builder().apply {
+                        setOnClick (
+                            ActionBuilders.LaunchAction.Builder().apply {
+                                setId("Trigger-QRpass-imageTask")
+                                setAndroidActivity(
+                                    ActionBuilders.AndroidActivity.Builder().apply {
+                                        setClassName(MainActivity::class.java.name)
+                                        setPackageName("kr.yhs.qrcheck")
+                                    }.build()
+                                )
+                            }.build()
+                        )
+                    }.build()
+                )
+            )
+        }.build()
+
+    private fun getSpacer(
+        width: DpProp? = null,
+        height: DpProp? = null
+    ) =
+        Spacer.Builder().apply {
+            if (width != null)
+                setWidth(width)
+            if (height != null)
+                setHeight(height)
+        }.build()
+
+    private fun getButton(
+        color: Int,
+        clickable: Clickable? = null,
+        paddingSize: DpProp = dp(24f),
+        buttonSize: DpProp = dp(48f)
+    ) =
+        Image.Builder().apply {
+            setHeight(buttonSize)
+            setWidth(buttonSize)
+            setContentScaleMode(CONTENT_SCALE_MODE_FILL_BOUNDS)
+            setModifiers(
+                Modifiers.Builder().apply {
+                    setPadding(
+                        padding(all=paddingSize)
+                    )
+                    setBackground(
+                        background(
+                            corner = corner(buttonSize),
+                            color = argb(
+                                ContextCompat.getColor(
+                                this@DashboardTile, color
+                                )
+                            )
+                        )
+                    )
+                    if (clickable != null)
+                        setClickable(clickable)
+                }.build()
             )
         }.build()
 }
