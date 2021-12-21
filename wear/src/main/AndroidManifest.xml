@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="kr.yhs.qrcheck">
+    package="kr.yhs.qrpass">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -28,7 +28,7 @@
             android:value="true" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="kr.yhs.qrpass.MainActivity"
             android:exported="true"
             android:label="@string/app_name">
             <intent-filter>
@@ -39,7 +39,7 @@
         </activity>
 
         <service
-            android:name="kr.yhs.qrcheck.tiles.QRpassTile"
+            android:name="kr.yhs.qrpass.tiles.QRpassTile"
             android:label="@string/tile_label"
             android:description="@string/tile_description"
             android:icon="@drawable/ic_dashboard"
