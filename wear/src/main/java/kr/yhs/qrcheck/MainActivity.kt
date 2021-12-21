@@ -12,6 +12,7 @@ import androidx.core.view.InputDeviceCompat
 import androidx.core.view.ViewConfigurationCompat
 import androidx.wear.phone.interactions.PhoneTypeHelper
 import androidx.wear.remote.interactions.RemoteActivityHelper
+import androidx.wear.tiles.TileService
 import androidx.wear.widget.ConfirmationOverlay
 import com.google.android.gms.wearable.*
 import kotlinx.coroutines.*
@@ -78,6 +79,13 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
 
         binding.warningLayout.visibility = View.GONE
         binding.viewPager.adapter = ViewPagerAdapter(page)
+
+        val tileClickableId  = intent.getStringExtra(TileService.EXTRA_CLICKABLE_ID)
+        if (tileClickableId != null) {
+            if (tileClickableId == "Trigger-QRpass-imageTask") {
+                binding.viewPager.currentItem = 1
+            }
+        }
 
         if (typeClient == -1) {
             when (PhoneTypeHelper.getPhoneDeviceType(applicationContext)) {
