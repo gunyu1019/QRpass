@@ -14,7 +14,7 @@ import kr.yhs.qrcheck.client.listener.FailedResponse
 import kr.yhs.qrcheck.client.listener.SucceedResponse
 import kotlin.coroutines.CoroutineContext
 
-abstract class BaseClient(open val activity: Activity): CoroutineScope, FailedResponse, SucceedResponse {
+abstract class BaseClient: CoroutineScope, FailedResponse, SucceedResponse {
     var privateKeyResource: TextView? = null
     var qrImageResource: ImageView? = null
     var responseStatus: Boolean? = null

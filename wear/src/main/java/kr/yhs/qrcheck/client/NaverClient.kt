@@ -7,7 +7,7 @@ import kotlinx.coroutines.launch
 import kr.yhs.qrcheck.MainActivity
 import org.jsoup.Jsoup
 
-class NaverClient(override val activity: Activity): BaseClient(activity) {
+class NaverClient: BaseClient() {
     private lateinit var keyPQR: String
     private lateinit var keyAUT: String
     private lateinit var keySES: String

@@ -116,7 +116,7 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
             val pqr = pm.getString("NID_PQR")
             val aut = pm.getString("NID_AUT")
             val ses = pm.getString("NID_SES")
-            client = NaverClient(this)
+            client = NaverClient()
             clientInitialized = true
             client.onLoad(pqr, aut, ses)
         }
@@ -269,7 +269,7 @@ class MainActivity : Activity(), CoroutineScope , CapabilityClient.OnCapabilityC
                             pm.setString("NID_AUT", aut)
                             pm.setString("NID_SES", ses)
 
-                            client = NaverClient(this@MainActivity)
+                            client = NaverClient()
                             clientInitialized = true
                             client.onLoad(pqr, aut, ses)
 

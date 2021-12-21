@@ -66,11 +66,11 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         typeClient = pm.getInt("clientMode", -1)
         when (typeClient) {
             -1 -> {
-                client = NaverClient(this@MainActivity)
+                client = NaverClient()
                 pm.setInt("clientMode", 0)
             }
             0 -> {
-                client = NaverClient(this@MainActivity)
+                client = NaverClient()
             }
         }
         client.setOnFailedListener {
