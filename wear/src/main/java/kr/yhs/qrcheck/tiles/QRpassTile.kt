@@ -1,6 +1,5 @@
 package kr.yhs.qrcheck.tiles
 
-import android.graphics.drawable.BitmapDrawable
 import androidx.core.content.ContextCompat
 import androidx.wear.tiles.*
 import androidx.wear.tiles.ColorBuilders.argb
@@ -22,10 +21,9 @@ import kr.yhs.qrcheck.tiles.LayoutBuilder.text
 import kr.yhs.qrcheck.tiles.TilesBuilder.background
 import kr.yhs.qrcheck.tiles.TilesBuilder.corner
 import kr.yhs.qrcheck.tiles.TilesBuilder.padding
-import java.nio.ByteBuffer
 
 
-class DashboardTile : TileService() {
+class QRpassTile : TileService() {
     private val RESOURCES_VERSION = "1"
     private val serviceScope = CoroutineScope(Dispatchers.IO)
 
@@ -52,18 +50,16 @@ class DashboardTile : TileService() {
         serviceScope.future {
             Resources.Builder()
                 .setVersion(RESOURCES_VERSION)
-                .apply {
-                    addIdToImageMapping(
-                        TileButtonResourceId,
-                        ResourceBuilders.ImageResource.Builder().apply {
-                            setAndroidResourceByResId(
-                                ResourceBuilders.AndroidImageResourceByResId.Builder()
-                                    .setResourceId(R.drawable.ic_baseline_refresh)
-                                    .build()
-                            )
-                        }.build()
-                    )
-                }
+                .addIdToImageMapping(
+                    TileButtonResourceId,
+                    ResourceBuilders.ImageResource.Builder().apply {
+                        setAndroidResourceByResId(
+                            ResourceBuilders.AndroidImageResourceByResId.Builder()
+                                .setResourceId(R.drawable.logo_background)
+                                .build()
+                        )
+                    }.build()
+                )
                 .build()
         }
 
@@ -111,7 +107,7 @@ class DashboardTile : TileService() {
             )
             addContent(
                 getButton(
-                    R.color.tile_button,
+                    R.color.white,
                     resourceId = TileButtonResourceId,
                     clickable = Clickable.Builder().apply {
                         setOnClick(
@@ -143,16 +139,15 @@ class DashboardTile : TileService() {
 
     private fun getButton(
         color: Int,
+        resourceId: String,
         clickable: Clickable? = null,
-        resourceId: String? = null,
-        paddingSize: DpProp = dp(24f),
+        paddingSize: DpProp = dp(12f),
         buttonSize: DpProp = dp(48f)
     ) =
         Image.Builder().apply {
+            setResourceId(resourceId)
             setHeight(buttonSize)
             setWidth(buttonSize)
-            if(resourceId != null)
-                setResourceId(resourceId)
             setContentScaleMode(CONTENT_SCALE_MODE_FILL_BOUNDS)
             setModifiers(
                 Modifiers.Builder().apply {
@@ -164,7 +159,7 @@ class DashboardTile : TileService() {
                             corner = corner(buttonSize),
                             color = argb(
                                 ContextCompat.getColor(
-                                    this@DashboardTile, color
+                                    this@QRpassTile, color
                                 )
                             )
                         )

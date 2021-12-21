@@ -39,7 +39,7 @@
         </activity>
 
         <service
-            android:name="kr.yhs.qrcheck.tiles.DashboardTile"
+            android:name="kr.yhs.qrcheck.tiles.QRpassTile"
             android:label="@string/tile_label"
             android:description="@string/tile_description"
             android:icon="@drawable/ic_dashboard"

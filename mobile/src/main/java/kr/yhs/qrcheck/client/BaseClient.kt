@@ -6,8 +6,6 @@ import android.util.Base64
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
-import com.google.android.gms.appindexing.Thing
-import com.google.android.gms.tasks.OnSuccessListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -29,9 +27,6 @@ abstract class BaseClient(open val activity: MainActivity): CoroutineScope, Fail
     private var onFailedListener: ((String) -> Unit)? = null
 
     open val baseLink = ""
-
-    lateinit var thing: Thing
-    val isThingInitialized get() = this::thing.isInitialized
 
     fun setResource(
         privateKey: TextView? = null,
