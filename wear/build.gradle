@@ -10,8 +10,8 @@ android {
         applicationId "kr.yhs.qrpass"
         minSdk 26
         targetSdk 31
-        versionCode 1
-        versionName "1.0"
+        versionCode 201
+        versionName "1.1"
 
     }
 
@@ -39,7 +39,6 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
-    wearApp project(":wear")
 
     // Jsoup
     implementation 'org.jsoup:jsoup:1.13.1'
